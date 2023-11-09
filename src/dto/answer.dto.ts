@@ -4,28 +4,32 @@ import { IsOptional, IsString } from "class-validator";
 export class AnswerDto {
     id: string;
 
-    @IsString()
+    @IsOptional()
     @ApiProperty({ type: String })
     title: string;
 
-    @IsString()
+    @IsOptional()
     @ApiProperty({ type: String })
     answerA: string;
 
-    @IsString()
+    @IsOptional()
     @ApiProperty({ type: String })
     answerB: string;
 
-    @IsString()
+    @IsOptional()
     @ApiProperty({ type: String })
     answerC: string;
 
-    @IsString()
+    @IsOptional()
     @ApiProperty({ type: String })
     answerD: string;
 
-    @IsString()
+    @IsOptional()
     @ApiProperty({ type: String })
     trueAnswer: string;
+
+    @IsOptional()
+    @ApiProperty({type: String, default: "https://i.imgur.com/oJN9YcQ.jpg"})
+    image: string;
 
 }

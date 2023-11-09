@@ -18,9 +18,9 @@ export class AnswerService {
 
     async getAllByQuestionId(id: string) {
         try {
-            const questionId = await this.questionRepository.findOneBy({id: id});
+            const questionId = await this.questionRepository.findOneBy({ id: id });
 
-            if(questionId){
+            if (questionId) {
                 const result = await this.answerRepository.find({
                     relations: {
                         question: true,
@@ -40,28 +40,28 @@ export class AnswerService {
                         }
                     },
                     where: {
-                        question: {id: id},
+                        question: { id: id },
                     }
                 })
 
                 return result;
             }
-            else{
+            else {
                 throw new HttpException("Không tồn tại bộ câu hỏi cần tìm", 404);
             }
 
 
         } catch (error) {
-            if(error instanceof HttpException){
+            if (error instanceof HttpException) {
                 throw error;
             }
-            else{
+            else {
                 throw new HttpException("Lỗi server", 500);
             }
         }
     }
 
-    async getOneById(id: string){
+    async getOneById(id: string) {
         try {
             const result = await this.answerRepository.findOne({
                 relations: {
@@ -86,48 +86,116 @@ export class AnswerService {
                 }
             })
 
-            if(result){
+            if (result) {
                 return result;
             }
-            else{
+            else {
                 throw new HttpException("Không tìm thấy câu hỏi", 404);
             }
 
         } catch (error) {
-            if(error instanceof HttpException){
+            if (error instanceof HttpException) {
                 throw error;
             }
-            else{
+            else {
                 throw new HttpException("Lỗi server", 500);
             }
         }
     }
 
-    async creatAnswerByQuestionId(id: string, answerDto: AnswerDto){
+    async creatAnswerByQuestionId(id: string, answerDto: AnswerDto) {
         try {
-            const questionId = await this.questionRepository.findOneBy({id: id});
+            const questionId = await this.questionRepository.findOneBy({ id: id });
 
-            if(questionId){
+            if (questionId) {
+
+                if(answerDto.image === null || answerDto.image === undefined || answerDto.image === ""){
+                    answerDto.image = "https://i.imgur.com/oJN9YcQ.jpg";
+                }
+
                 const answer = await this.answerRepository.create({
                     ...answerDto,
-                    question: {id: id}
+                    question: { id: id }
                 })
 
                 const result = await this.answerRepository.save(answer);
 
                 return result;
             }
-            else{
+            else {
                 throw new HttpException("Không tồn tại bộ câu hỏi cần tìm", 404);
             }
         } catch (error) {
-            if(error instanceof HttpException){
+            if (error instanceof HttpException) {
                 throw error;
             }
-            else{
+            else {
                 throw new HttpException("Lỗi server", 500);
             }
         }
     }
 
+    async updateAnswerById(id: string, answerDto: AnswerDto){
+        try {
+            const updateAnswer = await this.answerRepository.findOneBy({id: id});
+
+            if(updateAnswer){
+
+                if(answerDto.image === null || answerDto.image === undefined || answerDto.image === ""){
+                    answerDto.image = "https://i.imgur.com/oJN9YcQ.jpg";
+                }
+
+                const result = await this.answerRepository.update({id: id}, answerDto);
+
+                if(result.affected){
+                    return result;
+                }
+
+                else{
+                    return false;
+                }
+            }
+
+            else{
+                throw new HttpException("Không tìm thấy câu hỏi cần cập nhật", 404);
+            }
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            else {
+                throw new HttpException("Lỗi server", 500);
+            }
+        }
+    }
+
+    async deleteAnswerById(id: string) {
+        try {
+            const deleteAnswer = await this.answerRepository.findOneBy({ id: id });
+
+            if (deleteAnswer) {
+                const result = await this.answerRepository.delete({ id: id });
+
+                if (result.affected) {
+                    return true;
+                }
+                else {
+                    return false
+                }
+            }
+
+            else {
+                throw new HttpException("Không tìm thấy câu hỏi cần xoá", 404);
+            }
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            else {
+                throw new HttpException("Lỗi server", 500);
+            }
+        }
+    }
 }

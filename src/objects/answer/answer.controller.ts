@@ -1,5 +1,5 @@
 import { AnswerDto } from 'src/dto/answer.dto';
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AnswerService } from "./answer.service";
 
@@ -26,6 +26,21 @@ export class AnswerController {
     @Post(":questionId")
     async creatAnswerByQuestionId(@Param("questionId") id: string, @Body() answerDto: AnswerDto){
         const result = await this.answerService.creatAnswerByQuestionId(id, answerDto);
+
+        return result;
+    }
+
+    @Put(":id")
+    async updateAnswerById(@Param("id") id: string, @Body() answerDto: AnswerDto) {
+        const result = await this.answerService.updateAnswerById(id, answerDto);
+
+        return result;
+    }
+
+
+    @Delete(":id")
+    async deleteAnswerById(@Param("id") id: string){
+        const result = await this.answerService.deleteAnswerById(id);
 
         return result;
     }
