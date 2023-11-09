@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Account } from "./account.entity";
-import { Type } from "./type.entity";
+import { Category } from "./category.entity";
 import { Expose } from "class-transformer";
 import { Answer } from "./answer.entity";
 
@@ -19,12 +19,12 @@ export class Question {
     })
     account: Account;
 
-    @ManyToOne(() => Type, (type) => type.questions)
+    @ManyToOne(() => Category, (category) => category.questions)
     @JoinColumn({
-        name: "typeId",
-        referencedColumnName: "id"
+        name: "categoryId",
+        referencedColumnName: "id",
     })
-    type: Type;
+    category: Category;
 
     @OneToMany(() => Answer, (answer) => answer.question)
     answers: Answer[];

@@ -14,5 +14,5 @@ export class QuestionDto{
 
     @IsString()
     @ApiProperty({type: String})
-    typeId: string;
+    categoryId: string;
 }

@@ -1,34 +1,33 @@
 import { Repository } from 'typeorm';
 import { HttpException, Injectable, Scope } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Type } from "src/entities/type.entity";
+import { Category } from "src/entities/category.entity";
 import { plainToInstance } from 'class-transformer';
-import { TypeDto } from 'src/dto/type.dto';
 
 @Injectable({
     scope: Scope.REQUEST,
 })
-export class TypeService {
+export class CategoryService {
 
-    constructor(@InjectRepository(Type) private readonly typeRepository: Repository<Type>) { }
+    constructor(@InjectRepository(Category) private readonly categoryRepository: Repository<Category>) { }
 
     /**
      * hàm lấy tất cả chủ đề các
      * @returns 
      */
-    async getAll(): Promise<Type[]>{
-        const result = await this.typeRepository.find();
+    async getAll(): Promise<Category[]>{
+        const result = await this.categoryRepository.find();
 
-        return plainToInstance(Type, result, {
+        return plainToInstance(Category, result, {
             excludeExtraneousValues: true,
         })
     }
 
-    async getOne(id: string): Promise<Type> { 
-        const result = await this.typeRepository.findOneBy({id: id})
+    async getOne(id: string): Promise<Category> { 
+        const result = await this.categoryRepository.findOneBy({id: id})
 
         if(result){
-            return plainToInstance(Type, result, {
+            return plainToInstance(Category, result, {
                 excludeExtraneousValues: true,  
             })
         }

@@ -1,10 +1,9 @@
 import { HttpException, Injectable, Scope } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { plainToInstance } from "class-transformer";
 import { QuestionDto } from "src/dto/question.dto";
 import { Account } from "src/entities/account.entity";
+import { Category } from "src/entities/category.entity";
 import { Question } from "src/entities/question.entity";
-import { Type } from "src/entities/type.entity";
 import { Repository } from "typeorm";
 
 @Injectable({
@@ -16,8 +15,8 @@ export class QuestionService {
         private readonly questionRepository: Repository<Question>,
         @InjectRepository(Account)
         private readonly accountRepository: Repository<Account>,
-        @InjectRepository(Type)
-        private readonly typeRepository: Repository<Type>,
+        @InjectRepository(Category)
+        private readonly categoryRepository: Repository<Category>,
     ) { }
 
 
@@ -27,7 +26,7 @@ export class QuestionService {
             const result = await this.questionRepository.find({
                 relations: {
                     account: true,
-                    type: true,
+                    category: true,
                 },
                 select: {
                     id: true,
@@ -36,7 +35,7 @@ export class QuestionService {
                         id: true,
                         username: true,
                     },
-                    type: {
+                    category: {
                         id: true,
                         name: true,
                         image: true,
@@ -55,7 +54,7 @@ export class QuestionService {
             const result = await this.questionRepository.findOne({
                 relations: {
                     account: true,
-                    type: true,
+                    category: true,
                 },
                 select: {
                     id: true,
@@ -63,7 +62,7 @@ export class QuestionService {
                     account: {
                         username: true,
                     },
-                    type: {
+                    category: {
                         id: true,
                         name: true,
                         image: true,
@@ -88,14 +87,14 @@ export class QuestionService {
                 throw new HttpException("Không tồn tại tài khoản", 400);
             }
 
-            const typesId = await this.typeRepository.findOneBy({id: questionDto.typeId});
-            if(!typesId){
+            const categorysId = await this.categoryRepository.findOneBy({id: questionDto.categoryId});
+            if(!categorysId){
                 throw new HttpException("Không tồn tại chủ đề", 400);
             }
 
             const question = this.questionRepository.create({
                 account: {id: questionDto.accountId},
-                type: {id: questionDto.typeId},
+                category: {id: questionDto.categoryId},
                 name: questionDto.name,
             });
             
@@ -118,7 +117,7 @@ export class QuestionService {
             if(questionUpdate){
                 const question = await this.questionRepository.create({
                     account: {id: questionDto.accountId},
-                    type: {id: questionDto.typeId},
+                    category: {id: questionDto.categoryId},
                     name: questionDto.name
                 })
 

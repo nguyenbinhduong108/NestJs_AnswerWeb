@@ -1,7 +1,7 @@
 import { Expose } from "class-transformer";
 import { IsString } from "class-validator";
 
-export class TypeDto{
+export class CategoryDto{
     @IsString()
     id: string;
 
