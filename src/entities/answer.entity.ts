@@ -21,7 +21,10 @@ export class Answer{
     @Column('varchar')
     answerD: string;
 
-    @Column("varchar", {default: 'aksjdlasjd'})
+    @Column('varchar')
+    trueAnswer: string;
+
+    @Column("varchar", {default: 'https://i.imgur.com/oJN9YcQ.jpg'})
     image: string;
 
     @ManyToOne(() => Question, (question) => question.answers)

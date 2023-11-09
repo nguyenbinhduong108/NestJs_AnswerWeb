@@ -11,6 +11,7 @@ import { TypeModule } from './objects/type/type.module';
 import { Question } from './entities/question.entity';
 import { Answer } from './entities/answer.entity';
 import { AnswerModule } from './objects/answer/answer.module';
+import * as fs from 'fs';
 
 
 @Module({
@@ -22,6 +23,18 @@ import { AnswerModule } from './objects/answer/answer.module';
       username: 'root',
       password: '12345678',
       database: 'mydatabase',
+
+      // host: process.env.DB_HOST,
+      // port: parseInt(process.env.DB_PORT),
+      // username: process.env.DB_USERNAME,
+      // password: process.env.DB_PASSWORD,
+      // database: process.env.DB_DATABASE,
+      // ssl: {
+      //   ca: fs.readFileSync(process.env.SSL_CA_CERTIFICATES),
+      // },
+
+      // autoLoadEntities: true,
+
       entities: [Account, Type, Question, Answer],
       synchronize: true,
       // logging: ['query'],
