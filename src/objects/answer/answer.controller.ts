@@ -1,4 +1,5 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { AnswerDto } from 'src/dto/answer.dto';
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AnswerService } from "./answer.service";
 
@@ -22,5 +23,10 @@ export class AnswerController {
         return result;
     }
 
+    @Post(":questionId")
+    async creatAnswerByQuestionId(@Param("questionId") id: string, @Body() answerDto: AnswerDto){
+        const result = await this.answerService.creatAnswerByQuestionId(id, answerDto);
 
+        return result;
+    }
 }

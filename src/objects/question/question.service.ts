@@ -100,7 +100,7 @@ export class QuestionService {
             });
             
             const result = await this.questionRepository.save(question);
-            return result
+            return result;
 
         } catch (error) {
             if (error instanceof HttpException) {

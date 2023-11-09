@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Scope } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { AnswerDto } from "src/dto/answer.dto";
 import { Answer } from "src/entities/answer.entity";
 import { Question } from "src/entities/question.entity";
 import { Repository } from "typeorm";
@@ -101,4 +102,32 @@ export class AnswerService {
             }
         }
     }
+
+    async creatAnswerByQuestionId(id: string, answerDto: AnswerDto){
+        try {
+            const questionId = await this.questionRepository.findOneBy({id: id});
+
+            if(questionId){
+                const answer = await this.answerRepository.create({
+                    ...answerDto,
+                    question: {id: id}
+                })
+
+                const result = await this.answerRepository.save(answer);
+
+                return result;
+            }
+            else{
+                throw new HttpException("Không tồn tại bộ câu hỏi cần tìm", 404);
+            }
+        } catch (error) {
+            if(error instanceof HttpException){
+                throw error;
+            }
+            else{
+                throw new HttpException("Lỗi server", 500);
+            }
+        }
+    }
+
 }
