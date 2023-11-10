@@ -1,7 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Account } from "./account.entity";
 import { Category } from "./category.entity";
-import { Expose } from "class-transformer";
 import { Answer } from "./answer.entity";
 
 @Entity({ name: "question" })
