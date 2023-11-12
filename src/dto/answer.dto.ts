@@ -1,30 +1,36 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class AnswerDto {
     id: string;
 
-    @IsOptional()
+    @IsNotEmpty({message: "Câu hỏi không được để trống"})
+    @IsString({message: "Câu hỏi không hợp lệ"})
     @ApiProperty({ type: String })
     title: string;
 
-    @IsOptional()
+    @IsNotEmpty({message: "Câu trả lời không được để trống"})
+    @IsString({message: "Câu trả lời không hợp lệ"})
     @ApiProperty({ type: String })
     answerA: string;
 
-    @IsOptional()
+    @IsNotEmpty({message: "Câu trả lời không được để trống"})
+    @IsString({message: "Câu trả lời không hợp lệ"})
     @ApiProperty({ type: String })
     answerB: string;
 
-    @IsOptional()
+    @IsNotEmpty({message: "Câu trả lời không được để trống"})
+    @IsString({message: "Câu trả lời không hợp lệ"})
     @ApiProperty({ type: String })
     answerC: string;
 
-    @IsOptional()
+    @IsNotEmpty({message: "Câu trả lời không được để trống"})
+    @IsString({message: "Câu trả lời không hợp lệ"})
     @ApiProperty({ type: String })
     answerD: string;
 
-    @IsOptional()
+    @IsNotEmpty({message: "Đáp án không được để trống"})
+    @IsString({message: "Đáp án không hợp lệ"})
     @ApiProperty({ type: String })
     trueAnswer: string;
 

@@ -11,6 +11,9 @@ export class Question {
     @Column("varchar")
     name: string;
 
+    @Column("varchar", {default: "https://i.imgur.com/Ekd3MLm.jpg"})
+    image: string;
+
     @ManyToOne(() => Account, (account) => account.questions)
     @JoinColumn({
         name: "accountId",

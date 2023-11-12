@@ -1,19 +1,22 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { IsEmail, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class AccountDto{
     id: string;
 
-    @IsString()
+    @IsNotEmpty({message: "Mật khẩu không được để trống"})
+    @IsString({message: "Mật khẩu không hợp lệ"})
     @ApiProperty({ type: String })
     password: string;
 
-    @IsEmail()
+    @IsNotEmpty({message: "Email không được để trống"})
+    @IsEmail({},{message: "Email không hợp lệ"})
     @ApiProperty({type: String})
     email: string;
 
-    @IsString()
+    @IsNotEmpty({message: "Tên người dùng không được để trống"})
+    @IsString({message: "Tên người dùng không hợp lệ"})
     @ApiProperty({type: String})
     username: string;
 
@@ -23,5 +26,5 @@ export class AccountDto{
 
     @IsOptional()
     @ApiProperty({type: Boolean, default: false})
-    isAdmin: boolean
+    isAdmin: boolean;
 }

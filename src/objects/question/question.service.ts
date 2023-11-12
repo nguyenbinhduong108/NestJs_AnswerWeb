@@ -31,6 +31,7 @@ export class QuestionService {
                 select: {
                     id: true,
                     name: true,
+                    image: true,
                     account: {
                         id: true,
                         username: true,
@@ -59,6 +60,7 @@ export class QuestionService {
                 select: {
                     id: true,
                     name: true,
+                    image: true,
                     account: {
                         username: true,
                     },
@@ -82,6 +84,11 @@ export class QuestionService {
 
     async create(questionDto: QuestionDto): Promise<Question> {
         try {
+
+            if(questionDto.image === null || questionDto.image === undefined || questionDto.image === ""){
+                questionDto.image = "https://i.imgur.com/Ekd3MLm.jpg"
+            }
+
             const accountId = await this.accountRepository.findOneBy({id: questionDto.accountId});
             if(!accountId){
                 throw new HttpException("Không tồn tại tài khoản", 400);
@@ -95,7 +102,7 @@ export class QuestionService {
             const question = this.questionRepository.create({
                 account: {id: questionDto.accountId},
                 category: {id: questionDto.categoryId},
-                name: questionDto.name,
+                ...questionDto
             });
             
             const result = await this.questionRepository.save(question);
@@ -118,7 +125,7 @@ export class QuestionService {
                 const question = await this.questionRepository.create({
                     account: {id: questionDto.accountId},
                     category: {id: questionDto.categoryId},
-                    name: questionDto.name
+                    ...questionDto
                 })
 
                 const result = await this.questionRepository.update({id: id}, question);
@@ -128,7 +135,7 @@ export class QuestionService {
             }
 
             else{
-                throw new HttpException("Khônh tồn tại bộ câu hỏi cần cập nhật", 400)
+                throw new HttpException("Không tồn tại bộ câu hỏi cần cập nhật", 400)
             }
         } catch (error) {
             if(error instanceof HttpException){
