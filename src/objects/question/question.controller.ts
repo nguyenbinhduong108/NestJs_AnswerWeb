@@ -9,9 +9,21 @@ export class QuestionController {
 
     constructor(private readonly questionService: QuestionService) { }
 
-    @Get()
-    async getAllQuestion(@Res() res) {
-        const result = await this.questionService.getAll();
+    @Get("getAllQuestionByAccountId/:id")
+    async getAllQuestionByAccountId(@Param("id") id: string,@Res() res) {
+        const result = await this.questionService.getAllQuestionByAccountId(id);
+
+        if (result) {
+            return res.status(HttpStatus.OK).json(result);
+        }
+        else {
+            return res.status(HttpStatus.NOT_FOUND).json(null);
+        }
+    }
+
+    @Get("getAllQuestionByCategoryId/:id")
+    async getAllQuestionByCategoryId(@Param("id") id:string, @Res() res){
+        const result = await this.questionService.getAllQuestionByCategoryId(id);
 
         if (result) {
             return res.status(HttpStatus.OK).json(result);

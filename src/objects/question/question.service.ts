@@ -20,8 +20,12 @@ export class QuestionService {
     ) { }
 
 
-
-    async getAll() {
+    /**
+     * lấy tất cả các bộ câu hỏi của 1 người dùng 
+     * @param id 
+     * @returns 
+     */
+    async getAllQuestionByAccountId(id: string) {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -41,6 +45,50 @@ export class QuestionService {
                         name: true,
                         image: true,
                     },
+                },
+                where: {
+                    account: {
+                        id: id
+                    }
+                }
+            });
+
+            return result;
+        } catch (error) {
+            throw new HttpException("Lỗi serve", 500);
+        }
+    }
+
+    /**
+     * lấy tất cả bộ câu hỏi theo chủ đề (người chơi sử dụng tính năng lọc)
+     * @param id 
+     * @returns 
+     */
+    async getAllQuestionByCategoryId(id: string){
+        try {
+            const result = await this.questionRepository.find({
+                relations: {
+                    account: true,
+                    category: true,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                    account: {
+                        id: true,
+                        username: true,
+                    },
+                    category: {
+                        id: true,
+                        name: true,
+                        image: true,
+                    },
+                },
+                where: {
+                    category: {
+                        id: id
+                    }
                 }
             });
 
