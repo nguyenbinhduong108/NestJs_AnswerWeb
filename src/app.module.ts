@@ -1,5 +1,5 @@
 import { QuestionModule } from './objects/question/question.module';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,7 +11,7 @@ import { CategoryModule } from './objects/category/category.module';
 import { Question } from './entities/question.entity';
 import { Answer } from './entities/answer.entity';
 import { AnswerModule } from './objects/answer/answer.module';
-import * as fs from 'fs';
+import { LoggerMiddleware } from './logger/logger.middleware';
 
 
 @Module({
@@ -37,4 +37,10 @@ import * as fs from 'fs';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '/*', method: RequestMethod.ALL})
+  }
+}

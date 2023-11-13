@@ -81,7 +81,7 @@ export class AccountService {
             });
             if (!createAccount) {
 
-                if(account.avatar === "" || account.avatar === null || account.avatar === undefined){
+                if (account.avatar === "" || account.avatar === null || account.avatar === undefined) {
                     account.avatar = 'https://i.imgur.com/t9Y4WFN.jpg';
                 }
 
@@ -110,7 +110,7 @@ export class AccountService {
      * @returns true nếu xoá thành công, false nếu xoá không thành công
      * 
      * B1: tìm kiếm id cần xoá trong db
-     * B2: nếu tìm thấy và xoá thành công thì trả về true, nếu tìm thấy và xoá không thành công thì trả về false, nếu không tìm thấy trả về null
+     * B2: nếu tìm thấy và xoá thành công thì trả về true, nếu tìm thấy và xoá không thành công thì trả về false, nếu không tìm thấy throw exception
      */
     async delete(id: string): Promise<boolean> {
         try {
@@ -126,10 +126,16 @@ export class AccountService {
                 }
             }
             else {
-                return null;
+                throw new HttpException("Không tìm thấy tài khoản cần xoá", 404);
             }
         } catch (error) {
-            throw new HttpException("Lỗi serve", 500);
+            if (error instanceof HttpException) {
+                throw error
+            }
+            else {
+                throw new HttpException("Lỗi server", 500);
+
+            }
         }
     }
 
@@ -214,16 +220,16 @@ export class AccountService {
         return result;
     }
 
-    async getOne(id): Promise<Account>{
-        const result = await this.accountRepository.findOneBy({id: id});
+    async getOne(id): Promise<Account> {
+        const result = await this.accountRepository.findOneBy({ id: id });
 
-        if(result){
+        if (result) {
             return plainToInstance(Account, result, {
                 excludeExtraneousValues: true,
             });
         }
 
-        else{
+        else {
             return null;
         }
     }
