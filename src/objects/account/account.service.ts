@@ -211,9 +211,7 @@ export class AccountService {
     async getAll(): Promise<Account[]> {
         const result = await this.accountRepository.find();
 
-        return plainToInstance(Account, result, {
-            excludeExtraneousValues: true
-        });
+        return result;
     }
 
     async getOne(id): Promise<Account>{

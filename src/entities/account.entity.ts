@@ -1,9 +1,10 @@
+import { BaseIdentity } from './../shared/interface/baseIdentity.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Question } from "./question.entity";
 import { Expose } from "class-transformer";
 
 @Entity({ name: 'account' })
-export class Account {
+export class Account extends BaseIdentity{
     @PrimaryGeneratedColumn('uuid')
     @Expose()
     id: string;

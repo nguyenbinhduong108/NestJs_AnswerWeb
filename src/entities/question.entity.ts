@@ -1,17 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Account } from "./account.entity";
 import { Category } from "./category.entity";
 import { Answer } from "./answer.entity";
+import { BaseIdentity } from "src/shared/interface/baseIdentity.entity";
 
 @Entity({ name: "question" })
-export class Question {
+export class Question extends BaseIdentity{
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column("varchar")
     name: string;
 
-    @Column("varchar", {default: "https://i.imgur.com/Ekd3MLm.jpg"})
+    @Column("varchar", { default: "https://i.imgur.com/Ekd3MLm.jpg" })
     image: string;
 
     @ManyToOne(() => Account, (account) => account.questions)
