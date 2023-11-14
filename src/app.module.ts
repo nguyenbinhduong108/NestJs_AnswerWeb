@@ -23,9 +23,9 @@ import { LoggerMiddleware } from './logger/logger.middleware';
       username: 'root',
       password: '12345678',
       database: 'mydatabase',
-
       entities: [Account, Category, Question, Answer],
       synchronize: true,
+      // logger: 'simple-console',
       // logging: ['query'],
     }),
     AccountModule,

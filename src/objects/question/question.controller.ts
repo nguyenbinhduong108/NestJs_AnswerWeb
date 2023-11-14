@@ -9,6 +9,13 @@ export class QuestionController {
 
     constructor(private readonly questionService: QuestionService) { }
 
+    @Get("GetAll")
+    async getAllQuestion() {
+        const result = await this.questionService.getAll();
+
+        return result;
+    }
+
     @Get("getAllQuestionByAccountId/:id")
     async getAllQuestionByAccountId(@Param("id") id: string,@Res() res) {
         const result = await this.questionService.getAllQuestionByAccountId(id);
@@ -53,10 +60,15 @@ export class QuestionController {
     }
 
     @Put(":id")
-    async updateQuestion(@Param("id") id: string, @Body() questionDto: QuestionDto){
+    async updateQuestion(@Param("id") id: string, @Body() questionDto: QuestionDto, @Res() res){
         const result = await this.questionService.update(id, questionDto);
 
-        return result;
+        if(result === true){
+            return res.status(HttpStatus.OK).json("Cập nhật câu hỏi thành công");
+        }
+        else{
+            return res.status(HttpStatus.BAD_REQUEST).json("Cập nhật câu hỏi thành công");
+        }
     }
 
     @Delete(":id")
@@ -64,10 +76,10 @@ export class QuestionController {
         const result = await this.questionService.delete(id);
 
         if(result){
-            return res.status(HttpStatus.OK).json(result);
+            return res.status(HttpStatus.OK).json("Xoá thành công");
         }
         else{
-            return res.status(HttpStatus.NOT_FOUND).json(result);
+            return res.status(HttpStatus.BAD_REQUEST).json("Xoá không thành công");
         }
     }
 }

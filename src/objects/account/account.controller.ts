@@ -1,5 +1,5 @@
 import { ImgurService } from '../../shared/UploadImage/imgur.service';
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res} from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res } from "@nestjs/common";
 import { AccountService } from "./account.service";
 import { ApiTags } from "@nestjs/swagger";
 import { AccountDto } from "src/dto/account.dto";
@@ -13,20 +13,20 @@ export class AccountController {
     ) { }
 
 
-    @Get('GetAll')
-    async getAll() {
-        return await this.accountService.getAll();
-    }
+    // @Get('GetAll')
+    // async getAll() {
+    //     return await this.accountService.getAll();
+    // }
 
     @Get('GetOne/:id')
-    async getOne(@Param('id') id: string, @Res() res){
+    async getOne(@Param('id') id: string, @Res() res) {
         const result = await this.accountService.getOne(id);
 
-        if(result){
+        if (result) {
             return res.status(HttpStatus.OK).json(result);
         }
 
-        else{
+        else {
             return res.status(HttpStatus.NOT_FOUND).json(null);
         }
     }
@@ -36,16 +36,11 @@ export class AccountController {
 
         const result = await this.accountService.login(email, password);
 
-        if (result) {
-            return res.status(HttpStatus.OK).json(true)
-        }
-        else {
-            return res.status(HttpStatus.NOT_FOUND).json(false);
-        }
+        return res.status(HttpStatus.OK).json(result)
     }
 
     @Post("/Create")
-    async createAccount(@Body() account: AccountDto) {     
+    async createAccount(@Body() account: AccountDto) {
         const result = await this.accountService.create(account);
 
         return result;

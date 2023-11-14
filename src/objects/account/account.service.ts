@@ -44,24 +44,30 @@ export class AccountService {
      * B2: nếu có trả về account cần tìm, nếu không trả về null
      */
     async login(email: string, password: string): Promise<Account> {
-
         try {
-
-            const result = await this.accountRepository.findOneBy({
-                email: email,
-                password: password,
-            })
+            const result = await this.accountRepository.findOneBy({ email: email });
 
             if (result) {
-                return plainToInstance(Account, result, {
-                    excludeExtraneousValues: true,
-                })
+                if (result.password === password) {
+                    return plainToInstance(Account, result, {
+                        excludeExtraneousValues: true,
+                    });
+                }
+                else {
+                    throw new HttpException("Mật khẩu sai", 500);
+                }
             }
             else {
-                return null;
+                throw new HttpException("Email này chưa được đăng ký tài khoản", 500);
             }
+
         } catch (error) {
-            throw new HttpException("Lỗi serve", 500);
+            if(error instanceof HttpException){
+                throw error;
+            }
+            else{
+                throw new HttpException("Lỗi server", 500);
+            }
         }
     }
 
@@ -191,7 +197,7 @@ export class AccountService {
 
             if (forgetAccount) {
                 if (forgetAccount.password === password) {
-                    throw new HttpException("Mật khẩu cần khác với mật khẩu trước đó", 500);
+                    throw new HttpException("Mật khẩu đã nhập trùng với mật khẩu trước đó", 500);
                 }
 
                 await this.accountRepository.update({ email: email }, { password: password });

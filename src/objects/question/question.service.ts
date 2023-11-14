@@ -19,13 +19,11 @@ export class QuestionService {
         private readonly categoryRepository: Repository<Category>,
     ) { }
 
-
     /**
-     * lấy tất cả các bộ câu hỏi của 1 người dùng 
-     * @param id 
+     * lấy tất các bộ câu hỏi
      * @returns 
      */
-    async getAllQuestionByAccountId(id: string) {
+    async getAll(): Promise<Question[]> {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -36,6 +34,54 @@ export class QuestionService {
                     id: true,
                     name: true,
                     image: true,
+                    timer: true,
+                    turn: true,
+                    account: {
+                        id: true,
+                        username: true,
+                    },
+                    category: {
+                        id: true,
+                        name: true,
+                        image: true,
+                    },
+                },
+            });
+            if (result.length !== 0) {
+                return result;
+            }
+            else {
+                throw new HttpException("Không có bộ câu hỏi nào", 404);
+            }
+
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            else {
+                throw new HttpException("Lỗi server", 500);
+            }
+        }
+    }
+
+    /**
+     * lấy tất cả các bộ câu hỏi của 1 người dùng 
+     * @param id 
+     * @returns 
+     */
+    async getAllQuestionByAccountId(id: string): Promise<Question[]> {
+        try {
+            const result = await this.questionRepository.find({
+                relations: {
+                    account: true,
+                    category: true,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                    timer: true,
+                    turn: true,
                     account: {
                         id: true,
                         username: true,
@@ -53,8 +99,16 @@ export class QuestionService {
                 }
             });
 
-            return result;
+            if (result.length !== 0) {
+                return result;
+            }
+            else {
+                throw new HttpException("Không có bộ câu hỏi nào", 404)
+            }
         } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
             throw new HttpException("Lỗi serve", 500);
         }
     }
@@ -64,7 +118,7 @@ export class QuestionService {
      * @param id 
      * @returns 
      */
-    async getAllQuestionByCategoryId(id: string){
+    async getAllQuestionByCategoryId(id: string): Promise<Question[]> {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -75,6 +129,8 @@ export class QuestionService {
                     id: true,
                     name: true,
                     image: true,
+                    timer: true,
+                    turn: true,
                     account: {
                         id: true,
                         username: true,
@@ -92,13 +148,22 @@ export class QuestionService {
                 }
             });
 
-            return result;
+            if (result.length !== 0) {
+                return result;
+            }
+            else {
+                throw new HttpException("Không có bộ câu hỏi nào", 404)
+            }
         } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
             throw new HttpException("Lỗi serve", 500);
         }
     }
 
-    async getOne(id: string){
+
+    async getOne(id: string): Promise<Question> {
         try {
             const result = await this.questionRepository.findOne({
                 relations: {
@@ -109,6 +174,8 @@ export class QuestionService {
                     id: true,
                     name: true,
                     image: true,
+                    timer: true,
+                    turn: true,
                     account: {
                         username: true,
                     },
@@ -123,9 +190,20 @@ export class QuestionService {
                 }
             })
 
+            if (result) {
+                result.turn += 1;
 
-            return result;
+                await this.questionRepository.update({ id: id }, { turn: result.turn });
+
+                return result;
+            }
+            else {
+                throw new HttpException("Không có bộ câu hỏi nào", 404)
+            }
         } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
             throw new HttpException("Lỗi serve", 500);
         }
     }
@@ -133,26 +211,26 @@ export class QuestionService {
     async create(questionDto: QuestionDto): Promise<Question> {
         try {
 
-            if(questionDto.image === null || questionDto.image === undefined || questionDto.image === ""){
+            if (questionDto.image === null || questionDto.image === undefined || questionDto.image === "") {
                 questionDto.image = "https://i.imgur.com/Ekd3MLm.jpg"
             }
 
-            const accountId = await this.accountRepository.findOneBy({id: questionDto.accountId});
-            if(!accountId){
+            const accountId = await this.accountRepository.findOneBy({ id: questionDto.accountId });
+            if (!accountId) {
                 throw new HttpException("Không tồn tại tài khoản", 400);
             }
 
-            const categorysId = await this.categoryRepository.findOneBy({id: questionDto.categoryId});
-            if(!categorysId){
+            const categorysId = await this.categoryRepository.findOneBy({ id: questionDto.categoryId });
+            if (!categorysId) {
                 throw new HttpException("Không tồn tại chủ đề", 400);
             }
 
             const question = this.questionRepository.create({
-                account: {id: questionDto.accountId},
-                category: {id: questionDto.categoryId},
+                account: { id: questionDto.accountId },
+                category: { id: questionDto.categoryId },
                 ...questionDto
             });
-            
+
             const result = await this.questionRepository.save(question);
             return result;
 
@@ -165,55 +243,59 @@ export class QuestionService {
         }
     }
 
-    async update(id: string, questionDto: QuestionDto){
+    async update(id: string, questionDto: QuestionDto): Promise<Boolean> {
         try {
-            const questionUpdate = await this.questionRepository.findOneBy({id:id});
+            const questionUpdate = await this.questionRepository.findOneBy({ id: id });
 
-            if(questionUpdate){
+            if (questionUpdate) {
+                console.log('message');
+
                 const question = await this.questionRepository.create({
-                    account: {id: questionDto.accountId},
-                    category: {id: questionDto.categoryId},
+                    account: { id: questionDto.accountId },
+                    category: { id: questionDto.categoryId },
                     ...questionDto
                 })
+                console.log('message');
 
-                const result = await this.questionRepository.update({id: id}, question);
 
-                if(result.affected) return true;
+                const result = await this.questionRepository.update({ id: id }, question);
+
+                if (result.affected) return true;
                 else return false;
             }
 
-            else{
+            else {
                 throw new HttpException("Không tồn tại bộ câu hỏi cần cập nhật", 400)
             }
         } catch (error) {
-            if(error instanceof HttpException){
+            if (error instanceof HttpException) {
                 throw error;
             }
-            else{
+            else {
                 throw new HttpException("Lỗi serve", 500);
             }
         }
     }
 
-    async delete(id: string){
+    async delete(id: string): Promise<Boolean> {
         try {
-            const question =  await this.questionRepository.findOneBy({id: id});
+            const question = await this.questionRepository.findOneBy({ id: id });
 
-            if(question){
-                const result = await this.questionRepository.delete({id: id})
+            if (question) {
+                const result = await this.questionRepository.delete({ id: id })
 
-                if(result.affected){
+                if (result.affected !== 0) {
                     return true;
                 }
-                else{
+                else {
                     return false;
                 }
             }
-            else{
-                throw new HttpException("Không tìm thấy bộ câu hỏi cần xoá",400);
+            else {
+                throw new HttpException("Không tìm thấy bộ câu hỏi cần xoá", 400);
             }
         } catch (error) {
-            if(error instanceof HttpException){
+            if (error instanceof HttpException) {
                 throw error;
             } else {
                 throw new HttpException("Lỗi serve", 500);

@@ -15,6 +15,12 @@ export class Question extends BaseIdentity{
     @Column("varchar", { default: "https://i.imgur.com/Ekd3MLm.jpg" })
     image: string;
 
+    @Column('int', {default: 60})
+    timer: number;
+
+    @Column('int')
+    turn: number;
+
     @ManyToOne(() => Account, (account) => account.questions)
     @JoinColumn({
         name: "accountId",

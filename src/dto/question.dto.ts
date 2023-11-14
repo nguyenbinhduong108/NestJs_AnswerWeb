@@ -1,5 +1,5 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { type } from 'os';
 
 export class QuestionDto{
@@ -10,7 +10,6 @@ export class QuestionDto{
     @ApiProperty({type: String})
     name: string;
 
-    @IsOptional()
     @ApiProperty({type: String, default: "https://i.imgur.com/Ekd3MLm.jpg"})
     image: string;
 
@@ -23,4 +22,9 @@ export class QuestionDto{
     @IsNotEmpty({message: "Chủ đề không được để trống"})
     @ApiProperty({type: String, default: "c528aa85-6f65-4794-91c9-fe6102b94c12"})
     categoryId: string;
+
+    @IsNumber({},{message: "Giới hạn thời gian phải là số"})
+    @Min(60, {message: "Thời gian tối thiểu phải là 60s"})
+    @ApiProperty({type: Number, default: 60})
+    timer: number;
 }
