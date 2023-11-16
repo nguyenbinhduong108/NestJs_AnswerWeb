@@ -47,25 +47,24 @@ export class QuestionService {
                     },
                 },
             });
+
             if (result.length !== 0) {
                 return result;
-            }
-            else {
+            } else {
                 throw new HttpException("Không có bộ câu hỏi nào", 404);
             }
 
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
-            }
-            else {
+            } else {
                 throw new HttpException("Lỗi server", 500);
             }
         }
     }
 
     /**
-     * lấy tất cả các bộ câu hỏi của 1 người dùng 
+     * lấy tất cả các bộ câu hỏi của 1 admin
      * @param id 
      * @returns 
      */
@@ -101,15 +100,15 @@ export class QuestionService {
 
             if (result.length !== 0) {
                 return result;
-            }
-            else {
+            } else {
                 throw new HttpException("Không có bộ câu hỏi nào", 404)
             }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
+            } else {
+                throw new HttpException("Lỗi server", 500);
             }
-            throw new HttpException("Lỗi serve", 500);
         }
     }
 
@@ -150,19 +149,23 @@ export class QuestionService {
 
             if (result.length !== 0) {
                 return result;
-            }
-            else {
+            } else {
                 throw new HttpException("Không có bộ câu hỏi nào", 404)
             }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
+            } else {
+                throw new HttpException("Lỗi server", 500);
             }
-            throw new HttpException("Lỗi serve", 500);
         }
     }
 
-
+    /**
+     * lấy 1 bộ câu hỏi
+     * @param id 
+     * @returns 
+     */
     async getOne(id: string): Promise<Question> {
         try {
             const result = await this.questionRepository.findOne({
@@ -190,27 +193,28 @@ export class QuestionService {
                 }
             })
 
-            if (result) {
-                result.turn += 1;
-
-                await this.questionRepository.update({ id: id }, { turn: result.turn });
-
+            if (result !== null) {
                 return result;
-            }
-            else {
+            } else {
                 throw new HttpException("Không có bộ câu hỏi nào", 404)
             }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
+            } else {
+                throw new HttpException("Lỗi server", 500);
+
             }
-            throw new HttpException("Lỗi serve", 500);
         }
     }
 
+    /**
+     * tạo 1 bộ câu hỏi
+     * @param questionDto 
+     * @returns 
+     */
     async create(questionDto: QuestionDto): Promise<Question> {
         try {
-
             if (questionDto.image === null || questionDto.image === undefined || questionDto.image === "") {
                 questionDto.image = "https://i.imgur.com/Ekd3MLm.jpg"
             }
@@ -232,51 +236,59 @@ export class QuestionService {
             });
 
             const result = await this.questionRepository.save(question);
-            return result;
 
+            return result;
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
             } else {
-                throw new HttpException("Lỗi serve", 500);
+                throw new HttpException("Lỗi server", 500);
             }
         }
     }
 
+    /**
+     * cập nhật 1 bộ câu hỏi
+     * @param id 
+     * @param questionDto 
+     * @returns 
+     */
     async update(id: string, questionDto: QuestionDto): Promise<Boolean> {
         try {
             const questionUpdate = await this.questionRepository.findOneBy({ id: id });
 
             if (questionUpdate) {
-                console.log('message');
-
                 const question = await this.questionRepository.create({
                     account: { id: questionDto.accountId },
                     category: { id: questionDto.categoryId },
                     ...questionDto
                 })
-                console.log('message');
-
 
                 const result = await this.questionRepository.update({ id: id }, question);
 
-                if (result.affected) return true;
-                else return false;
-            }
-
-            else {
+                if (result.affected !== 0) {
+                    return true;
+                }
+                else {
+                    throw new HttpException("Cập nhật bộ câu hỏi không thành công", 500);
+                }
+            } else {
                 throw new HttpException("Không tồn tại bộ câu hỏi cần cập nhật", 400)
             }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
-            }
-            else {
-                throw new HttpException("Lỗi serve", 500);
+            } else {
+                throw new HttpException("Lỗi server", 500);
             }
         }
     }
 
+    /**
+     * xoá 1 bộ câu hỏi
+     * @param id 
+     * @returns 
+     */
     async delete(id: string): Promise<Boolean> {
         try {
             const question = await this.questionRepository.findOneBy({ id: id });
@@ -288,18 +300,34 @@ export class QuestionService {
                     return true;
                 }
                 else {
-                    return false;
+                    throw new HttpException("Xoá không thành công", 500);
                 }
-            }
-            else {
+            } else {
                 throw new HttpException("Không tìm thấy bộ câu hỏi cần xoá", 400);
             }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
             } else {
-                throw new HttpException("Lỗi serve", 500);
+                throw new HttpException("Lỗi server", 500);
             }
         }
+    }
+
+    /**
+     * cập nhật lại số lượt chơi
+     * @param id 
+     */
+    async updateTurnOfQuestion(id: string): Promise<void> {
+        try {
+            const result = await this.questionRepository.findOneBy({ id: id });
+
+            result.turn++
+
+            await this.questionRepository.update({ id: id }, { turn: result.turn });
+        } catch (error) {
+            throw new HttpException("Lỗi server", 500);
+        }
+
     }
 }

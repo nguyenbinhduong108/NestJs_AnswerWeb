@@ -4,6 +4,7 @@ import { AnswerDto } from "src/dto/answer.dto";
 import { Answer } from "src/entities/answer.entity";
 import { Question } from "src/entities/question.entity";
 import { Repository } from "typeorm";
+import { QuestionService } from "../question/question.service";
 
 @Injectable({
     scope: Scope.REQUEST,
@@ -13,9 +14,14 @@ export class AnswerService {
     constructor(
         @InjectRepository(Answer) private readonly answerRepository: Repository<Answer>,
         @InjectRepository(Question) private readonly questionRepository: Repository<Question>,
+        private readonly questionService: QuestionService,
     ) { }
 
-
+    /**
+     * lấy ra tất cả các câu hỏi theo id của bộ câu hỏi
+     * @param id: id của bộ câu hỏi
+     * @returns 
+     */
     async getAllByQuestionId(id: string) {
         try {
             const questionId = await this.questionRepository.findOneBy({ id: id });
@@ -43,6 +49,8 @@ export class AnswerService {
                         question: { id: id },
                     }
                 })
+
+                this.questionService.updateTurnOfQuestion(id);
 
                 return result;
             }

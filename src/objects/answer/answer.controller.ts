@@ -1,5 +1,5 @@
 import { AnswerDto } from 'src/dto/answer.dto';
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AnswerService } from "./answer.service";
 
@@ -31,17 +31,17 @@ export class AnswerController {
     }
 
     @Put(":id")
-    async updateAnswerById(@Param("id") id: string, @Body() answerDto: AnswerDto) {
-        const result = await this.answerService.updateAnswerById(id, answerDto);
+    async updateAnswerById(@Param("id") id: string, @Body() answerDto: AnswerDto, @Res() res) {
+        await this.answerService.updateAnswerById(id, answerDto);
 
-        return result;
+        return res.status(HttpStatus.OK).json("Cập nhật câu hỏi thành công");
     }
 
 
     @Delete(":id")
-    async deleteAnswerById(@Param("id") id: string){
-        const result = await this.answerService.deleteAnswerById(id);
+    async deleteAnswerById(@Param("id") id: string, @Res() res){
+        await this.answerService.deleteAnswerById(id);
 
-        return result;
+        return res.status(HttpStatus.OK).json("Xoá câu hỏi thành công");
     }
 }
