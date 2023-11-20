@@ -2,6 +2,7 @@ import { HttpException, Injectable, Scope } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { QuestionDto } from "src/dto/question.dto";
 import { Account } from "src/entities/account.entity";
+import { Answer } from "src/entities/answer.entity";
 import { Category } from "src/entities/category.entity";
 import { Question } from "src/entities/question.entity";
 import { Repository } from "typeorm";
@@ -36,6 +37,7 @@ export class QuestionService {
                     image: true,
                     timer: true,
                     turn: true,
+                    quantity: true,
                     account: {
                         id: true,
                         username: true,
@@ -81,6 +83,7 @@ export class QuestionService {
                     image: true,
                     timer: true,
                     turn: true,
+                    quantity: true,
                     account: {
                         id: true,
                         username: true,
@@ -130,6 +133,7 @@ export class QuestionService {
                     image: true,
                     timer: true,
                     turn: true,
+                    quantity: true,
                     account: {
                         id: true,
                         username: true,
@@ -179,9 +183,11 @@ export class QuestionService {
                     image: true,
                     timer: true,
                     turn: true,
+                    quantity: true,
                     account: {
                         username: true,
                     },
+                    // category: true,
                     category: {
                         id: true,
                         name: true,
@@ -315,19 +321,36 @@ export class QuestionService {
     }
 
     /**
-     * cập nhật lại số lượt chơi
+     * cập nhật lại tổng số lượt chơi
      * @param id 
      */
     async updateTurnOfQuestion(id: string): Promise<void> {
         try {
             const result = await this.questionRepository.findOneBy({ id: id });
 
-            result.turn++
+            result.turn++;
 
             await this.questionRepository.update({ id: id }, { turn: result.turn });
         } catch (error) {
-            throw new HttpException("Lỗi server", 500);
+            throw new HttpException("Lỗi cập nhật tổng số lượt chơi", 500);
         }
 
     }
+
+    /**
+     * cập nhật lại tổng số câu hỏi
+     * @param id 
+     */
+    async updateQuantityOfQuestion(id: string): Promise<void>{
+        try{
+            const result = await this.questionRepository.findOneBy({id: id});
+
+            result.quantity++;
+
+            await this.questionRepository.update({id: id}, {quantity: result.quantity});
+        } catch(error){
+            throw new HttpException("Lỗi cập nhật tổng số câu hỏi", 500);
+        }
+    }
+
 }

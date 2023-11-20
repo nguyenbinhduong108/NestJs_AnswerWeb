@@ -10,8 +10,8 @@ export class AnswerController {
     constructor(private readonly answerService: AnswerService) { }
 
     @Get("GetByQuestionId/:id")
-    async getAllByQuestionId(@Param("id") id: string){
-        const result = await this.answerService.getAllByQuestionId(id);
+    async getAllAnswerByQuestionId(@Param("id") id: string){
+        const result = await this.answerService.getAllAnswerByQuestionId(id);
 
         return result;
     }
@@ -24,8 +24,8 @@ export class AnswerController {
     }
 
     @Post(":questionId")
-    async creatAnswerByQuestionId(@Param("questionId") id: string, @Body() answerDto: AnswerDto){
-        const result = await this.answerService.creatAnswerByQuestionId(id, answerDto);
+    async creatAnswerByQuestionId(@Param("questionId") questionId: string, @Body() answerDto: AnswerDto){
+        const result = await this.answerService.creatAnswerByQuestionId(questionId, answerDto);
 
         return result;
     }

@@ -22,7 +22,7 @@ export class AnswerService {
      * @param id: id của bộ câu hỏi
      * @returns 
      */
-    async getAllByQuestionId(id: string) {
+    async getAllAnswerByQuestionId(id: string) {
         try {
             const questionId = await this.questionRepository.findOneBy({ id: id });
 
@@ -111,11 +111,11 @@ export class AnswerService {
         }
     }
 
-    async creatAnswerByQuestionId(id: string, answerDto: AnswerDto) {
+    async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto) {
         try {
-            const questionId = await this.questionRepository.findOneBy({ id: id });
+            const question = await this.questionRepository.findOneBy({ id: questionId });
 
-            if (questionId) {
+            if (question) {
 
                 if(answerDto.image === null || answerDto.image === undefined || answerDto.image === ""){
                     answerDto.image = "https://i.imgur.com/oJN9YcQ.jpg";
@@ -123,10 +123,12 @@ export class AnswerService {
 
                 const answer = await this.answerRepository.create({
                     ...answerDto,
-                    question: { id: id }
+                    question: { id: questionId }
                 })
 
                 const result = await this.answerRepository.save(answer);
+
+                this.questionService.updateQuantityOfQuestion(questionId);
 
                 return result;
             }

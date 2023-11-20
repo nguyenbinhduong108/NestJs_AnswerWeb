@@ -21,6 +21,9 @@ export class Question extends BaseIdentity{
     @Column('int')
     turn: number;
 
+    @Column('int', {default: 0})
+    quantity: number;
+
     @ManyToOne(() => Account, (account) => account.questions)
     @JoinColumn({
         name: "accountId",
