@@ -109,6 +109,10 @@ export class AnswerService {
                 throw new HttpException("Lỗi server", 500);
             }
         }
+    } 
+
+    fibonaciMemoized(n:number){
+        
     }
 
     async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto) {

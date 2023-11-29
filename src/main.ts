@@ -16,8 +16,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('Login example')
-    .setDescription('This is my login API description')
+    .setTitle('Nestjs_QuizMaster')
+    .setDescription('This is my QuizMaster API description')
     .setVersion('1.0')
     .build();
 

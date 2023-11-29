@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { AccountModule } from './objects/account/account.module';
-import { ImgurModule } from './shared/UploadImage/imgur.module';
+import { ImgurModule } from './shared/uploadImage/imgur.module';
 import { Category } from './entities/category.entity';
 import { CategoryModule } from './objects/category/category.module';
 import { Question } from './entities/question.entity';
