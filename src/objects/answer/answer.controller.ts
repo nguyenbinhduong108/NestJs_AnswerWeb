@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { AnswerService } from "./answer.service";
 
 @Controller({
-    path:'answers',
+    path: 'answers',
     scope: Scope.REQUEST
 })
 @ApiTags('Answer')
@@ -12,38 +12,38 @@ export class AnswerController {
 
     constructor(private readonly answerService: AnswerService) { }
 
-    @Get("GetByQuestionId/:id")
-    async getAllAnswerByQuestionId(@Param("id") id: string, @Res() res){
-        const result = await this.answerService.getAllAnswerByQuestionId(id);
+    @Get("GetByQuestionId/:questionId")
+    async getAllAnswerByQuestionId(@Param("questionId") questionId: string, @Res() res) {
+        const result = await this.answerService.getAllAnswerByQuestionId(questionId);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Get("GetOne/:id")
-    async getOneById(@Param("id") id: string, @Res() res){
-        const result = await this.answerService.getOneById(id);
+    @Get("GetOne/:answerId")
+    async getOneById(@Param("answerId") answerId: string, @Res() res) {
+        const result = await this.answerService.getOneById(answerId);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Post(":questionId")
-    async creatAnswerByQuestionId(@Param("questionId") questionId: string, @Body() answerDto: AnswerDto, @Res() res){
+    async creatAnswerByQuestionId(@Param("questionId") questionId: string, @Body() answerDto: AnswerDto, @Res() res) {
         const result = await this.answerService.creatAnswerByQuestionId(questionId, answerDto);
 
         return res.status(HttpStatus.ACCEPTED).json(result);
     }
 
-    @Put(":id")
-    async updateAnswerById(@Param("id") id: string, @Body() answerDto: AnswerDto, @Res() res) {
-        const result = await this.answerService.updateAnswerById(id, answerDto);
+    @Put(":answerId")
+    async updateAnswerById(@Param("answerId") answerId: string, @Body() answerDto: AnswerDto, @Res() res) {
+        const result = await this.answerService.updateAnswerById(answerId, answerDto);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
 
-    @Delete(":id")
-    async deleteAnswerById(@Param("id") id: string, @Res() res){
-        const result = await this.answerService.deleteAnswerById(id);
+    @Delete(":answerId")
+    async deleteAnswerById(@Param("answerId") answerId: string, @Res() res) {
+        const result = await this.answerService.deleteAnswerById(answerId);
 
         return res.status(HttpStatus.OK).json(result);
     }

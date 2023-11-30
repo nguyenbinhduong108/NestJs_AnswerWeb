@@ -47,3 +47,6 @@ build/config\.gypi
 .npmrc
 pnpm-lock.yaml
 .vercel
+
+# local env files
+.env

@@ -8,28 +8,7 @@ import { AccountDto } from "src/dto/account.dto";
 @ApiTags('Account')
 export class AccountController {
 
-    constructor(
-        private readonly accountService: AccountService,
-    ) { }
-
-
-    // @Get('GetAll')
-    // async getAll() {
-    //     return await this.accountService.getAll();
-    // }
-
-    // @Get('GetOne/:id')
-    // async getOne(@Param('id') id: string, @Res() res) {
-    //     const result = await this.accountService.getOne(id);
-
-    //     if (result) {
-    //         return res.status(HttpStatus.OK).json(result);
-    //     }
-
-    //     else {
-    //         return res.status(HttpStatus.NOT_FOUND).json(null);
-    //     }
-    // }
+    constructor(private readonly accountService: AccountService) { }
 
     @Get('Login')
     async login(@Query('email') email: string, @Query('password') password: string, @Res() res) {
@@ -47,9 +26,9 @@ export class AccountController {
 
     }
 
-    @Put('Change/:id')
-    async changeAccount(@Param('id') id: string, @Query('password') password: string, @Res() res) {
-        const result = await this.accountService.change(id, password);
+    @Put('Change/:accountId')
+    async changeAccount(@Param('accountId') accountId: string, @Query('password') password: string, @Res() res) {
+        const result = await this.accountService.change(accountId, password);
 
         return res.status(HttpStatus.OK).json(result);
 
@@ -63,9 +42,9 @@ export class AccountController {
 
     }
 
-    @Delete(':id')
-    async deleteAccount(@Param('id') id: string, @Res() res) {
-        const result = await this.accountService.delete(id);
+    @Delete(':accountId')
+    async deleteAccount(@Param('accountId') accountId: string, @Res() res) {
+        const result = await this.accountService.delete(accountId);
 
         return res.status(HttpStatus.OK).json(result);
 

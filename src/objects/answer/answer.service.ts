@@ -18,15 +18,22 @@ export class AnswerService {
     ) { }
 
     /**
-     * lấy ra tất cả các câu hỏi theo id của bộ câu hỏi
-     * @param id: id của bộ câu hỏi lấy 
-     * @returns 
+     * lấy ra tất cả các answer theo id của question
+     * @param id: id của question lấy 
+     * @returns danh sách answer của question
+     * 
+     * B1: Kiểm tra question có tồn tại không
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Select ra các answer cần tìm
+     * B3: Cập nhật lại turn cảu question (số lượt chơi)
+     * B4: Trả về danh sách answer của question cần tìm
      */
-    async getAllAnswerByQuestionId(id: string): Promise<Answer[]> {
+    async getAllAnswerByQuestionId(questionId: string): Promise<Answer[]> {
         try {
-            const questionId = await this.questionRepository.findOneBy({ id: id });
+            const questions = await this.questionRepository.findOneBy({ id: questionId });
 
-            if (questionId) {
+            if (questions) {
                 const result = await this.answerRepository.find({
                     relations: {
                         question: true,
@@ -46,16 +53,16 @@ export class AnswerService {
                         }
                     },
                     where: {
-                        question: { id: id },
+                        question: { id: questionId },
                     }
                 })
 
-                this.questionService.updateTurnOfQuestion(id);
+                this.questionService.updateTurnOfQuestion(questionId);
 
                 return result;
             }
             else {
-                throw new HttpException("Không tồn tại bộ câu hỏi cần tìm", 404);
+                throw new HttpException("Không tồn tại question cần tìm", 404);
             }
 
 
@@ -68,8 +75,17 @@ export class AnswerService {
             }
         }
     }
-
-    async getOneById(id: string) {
+    
+    /**
+     * Hàm lấy 1 answer
+     * @param answerId: id của answer cần tìm
+     * @returns answer cần tìm
+     * 
+     * B1: Tìm kiếm answer
+     *  - Nếu không có throw
+     *  - Nếu có trả về answer
+     */
+    async getOneById(answerId: string): Promise<Answer> {
         try {
             const result = await this.answerRepository.findOne({
                 relations: {
@@ -90,7 +106,7 @@ export class AnswerService {
                     }
                 },
                 where: {
-                    id: id,
+                    id: answerId,
                 }
             })
 
@@ -111,10 +127,20 @@ export class AnswerService {
         }
     } 
     /**
-     * hàm thêm 
-     * @param questionId 
-     * @param answerDto 
-     * @returns 
+     * hàm thêm answer cho 1 question
+     * @param questionId: id của question
+     * @param answerDto: thông tin answer 
+     * @returns answer vừa thêm
+     * 
+     * B1: Kiểm tra có tồn tại question KHÔNG
+     *  - Nếu không tìm thấy throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Validate dữ liệu
+     *  - Image: Nếu ảnh không hợp lệ thì sử dụng ảnh mặc định
+     * B3: Tạo ra obejct để thâm vào DB
+     * B4: Lưu object vào DB
+     * B5: Cập nhật lại quantity của question
+     * B6: Trả về answer của thêm
      */
     async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto): Promise<Answer> {
         try {
@@ -138,7 +164,7 @@ export class AnswerService {
                 return this.getOneById(result.id);
             }
             else {
-                throw new HttpException("Không tồn tại bộ câu hỏi cần tìm", 404);
+                throw new HttpException("Không tồn tại question cần tìm", 404);
             }
         } catch (error) {
             if (error instanceof HttpException) {
@@ -150,9 +176,25 @@ export class AnswerService {
         }
     }
 
-    async updateAnswerById(id: string, answerDto: AnswerDto){
+    /**
+     * Hàm cập nhật 1 answer
+     * @param id: id của answer cần cập nhật
+     * @param answerDto: thông tin của answer 
+     * @returns answer vừa được cập nhật
+     * 
+     * B1: Tìm kiếm answer cần cập nhật
+     *  - Nếu không tìm thấy throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Validate dữ liệu
+     *  - Image: Nếu ảnh không hợp lệ thì sử dụng ảnh mặc định
+     * B3: Cập nhật lại answer
+     *  - Nếu cập nhật không thành công thì throw
+     *  - Nếu cập nhật thành công sang B4
+     * B4: Trả về answer 
+     */
+    async updateAnswerById(answerId: string, answerDto: AnswerDto): Promise<Answer>{
         try {
-            const updateAnswer = await this.answerRepository.findOneBy({id: id});
+            const updateAnswer = await this.answerRepository.findOneBy({id: answerId});
 
             if(updateAnswer){
 
@@ -160,14 +202,14 @@ export class AnswerService {
                     answerDto.image = "https://i.imgur.com/oJN9YcQ.jpg";
                 }
 
-                const result = await this.answerRepository.update({id: id}, answerDto);
+                const result = await this.answerRepository.update({id: answerId}, answerDto);
 
                 if(result.affected){
-                    return this.getOneById(id);
+                    return this.getOneById(answerId);
                 }
 
                 else{
-                    return false;
+                    throw new HttpException("Cập nhật không thành công",500)
                 }
             }
 
@@ -185,17 +227,31 @@ export class AnswerService {
         }
     }
 
-    async deleteAnswerById(id: string) {
+    /**
+     * Hàm xoá answer
+     * @param answerId: id answer cần xoá
+     * @returns true
+     * 
+     * B1: Tìm kiếm answer cần xoá
+     *  - Nếu không tìm thấy throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Xoá answer
+     *  - Nếu xoá không thành công thì throw
+     *  - Nếu xoá thành công sang B3
+     * B3: Lấy id của question chứa answer đó 
+     * B4: Cập nhật lại quantity của question
+     * B5: Trả về true
+     */
+    async deleteAnswerById(answerId: string): Promise<Boolean> {
         try {
-            const deleteAnswer = await this.answerRepository.findOneBy({ id: id });
+            const deleteAnswer = await this.answerRepository.findOneBy({ id: answerId });
 
-            const questionId = (await (this.getOneById(id))).question.id;
 
             if (deleteAnswer) {
-                const result = await this.answerRepository.delete({ id: id });
+                const result = await this.answerRepository.delete({ id: answerId });
 
-                
                 if (result.affected) {
+                    const questionId = (await (this.getOneById(answerId))).question.id;
                     this.questionService.updateMinusQuantityOfQuestion(questionId);
                     return true;
                 }

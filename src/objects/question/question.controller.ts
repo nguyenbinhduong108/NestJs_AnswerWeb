@@ -19,23 +19,23 @@ export class QuestionController {
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Get("getAllQuestionByAccountId/:id")
-    async getAllQuestionByAccountId(@Param("id") id: string, @Res() res) {
-        const result = await this.questionService.getAllQuestionByAccountId(id);
+    @Get("getAllQuestionByAccountId/:accountId")
+    async getAllQuestionByAccountId(@Param("accountId") accountId: string, @Res() res) {
+        const result = await this.questionService.getAllQuestionByAccountId(accountId);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Get("getAllQuestionByCategoryId/:id")
-    async getAllQuestionByCategoryId(@Param("id") id: string, @Res() res) {
-        const result = await this.questionService.getAllQuestionByCategoryId(id);
+    @Get("getAllQuestionByCategoryId/:categoryId")
+    async getAllQuestionByCategoryId(@Param("categoryId") categoryId: string, @Res() res) {
+        const result = await this.questionService.getAllQuestionByCategoryId(categoryId);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Get(":id")
-    async getOneQuestion(@Param("id") id: string, @Res() res) {
-        const result = await this.questionService.getOne(id);
+    @Get(":questionId")
+    async getOneQuestionByQuestionId(@Param("questionId") questionId: string, @Res() res) {
+        const result = await this.questionService.getOneQuestionByQuestionId(questionId);
 
         return res.status(HttpStatus.OK).json(result);
     }
@@ -47,16 +47,16 @@ export class QuestionController {
         return res.status(HttpStatus.ACCEPTED).json(result);
     }
 
-    @Put(":id")
-    async updateQuestion(@Param("id") id: string, @Body() questionDto: QuestionDto, @Res() res) {
-        const result = await this.questionService.updateQuestion(id, questionDto);
+    @Put(":questionId")
+    async updateQuestion(@Param("questionId") questionId: string, @Body() questionDto: QuestionDto, @Res() res) {
+        const result = await this.questionService.updateQuestion(questionId, questionDto);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Delete(":id")
-    async deleteQuestion(@Param("id") id: string, @Res() res) {
-        const result = await this.questionService.deleteQuestion(id);
+    @Delete(":questionId")
+    async deleteQuestion(@Param("questionId") questionId: string, @Res() res) {
+        const result = await this.questionService.deleteQuestion(questionId);
 
         return res.status(HttpStatus.OK).json(result);
     }

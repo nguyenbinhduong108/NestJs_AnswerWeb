@@ -21,8 +21,13 @@ export class QuestionService {
     ) { }
 
     /**
-     * lấy tất các bộ câu hỏi
-     * @returns 
+     * Hàm lấy tất các question
+     * @returns danh sách question
+     * 
+     * B1: Tìm kiếm question trong db
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy thì sang B2
+     * B2: Trả về danh sách question
      */
     async getAll(): Promise<Question[]> {
         try {
@@ -66,11 +71,16 @@ export class QuestionService {
     }
 
     /**
-     * lấy tất cả các bộ câu hỏi của 1 admin
-     * @param id 
-     * @returns 
+     * Hàm lấy question theo 1 admin account
+     * @param accountId: id của admin account
+     * @returns danh sách question
+     * 
+     * B1: Tìm kiếm question trong db
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Trả về danh sách question
      */
-    async getAllQuestionByAccountId(id: string): Promise<Question[]> {
+    async getAllQuestionByAccountId(accountId: string): Promise<Question[]> {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -96,7 +106,7 @@ export class QuestionService {
                 },
                 where: {
                     account: {
-                        id: id
+                        id: accountId
                     }
                 }
             });
@@ -116,11 +126,16 @@ export class QuestionService {
     }
 
     /**
-     * lấy tất cả bộ câu hỏi theo chủ đề (người chơi sử dụng tính năng lọc)
-     * @param id 
-     * @returns 
+     * Hàm ấy tất cả question theo id category (người chơi sử dụng tính năng lọc)
+     * @param categoryId 
+     * @returns danh sách question
+     * 
+     * B1: Tìm kiếm question trong db
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Trả về danh sách question
      */
-    async getAllQuestionByCategoryId(id: string): Promise<Question[]> {
+    async getAllQuestionByCategoryId(categoryId: string): Promise<Question[]> {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -146,7 +161,7 @@ export class QuestionService {
                 },
                 where: {
                     category: {
-                        id: id
+                        id: categoryId
                     }
                 }
             });
@@ -166,11 +181,16 @@ export class QuestionService {
     }
 
     /**
-     * lấy 1 bộ câu hỏi
-     * @param id 
-     * @returns 
+     * Hàm lấy 1 question
+     * @param questionId: id của question cần tìm
+     * @returns question
+     * 
+     * B1: Tìm kiếm question trong db
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Trả về question
      */
-    async getOne(id: string): Promise<Question> {
+    async getOneQuestionByQuestionId(questionId: string): Promise<Question> {
         try {
             const result = await this.questionRepository.findOne({
                 relations: {
@@ -195,11 +215,11 @@ export class QuestionService {
                     },
                 },
                 where: {
-                    id: id,
+                    id: questionId,
                 }
             })
 
-            if (result !== null) {
+            if (result) {
                 return result;
             } else {
                 throw new HttpException("Không có bộ câu hỏi nào", 404)
@@ -215,9 +235,19 @@ export class QuestionService {
     }
 
     /**
-     * tạo 1 bộ câu hỏi
-     * @param questionDto 
-     * @returns 
+     * tạo 1 question
+     * @param questionDto: thông tin question
+     * @returns question 
+     * 
+     * B1: Validate dữ liệu
+     *  - Image: Nếu ảnh không hợp lệ thì sử dụng ảnh mặc định
+     *  - AccountId: Nếu AccountId không tồn tại thì throw
+     *  - CategoriesId: Nếu CategoriesId không tồn tại thì throw
+     * B2: Tạo object 
+     * B3: Thêm object vào db
+     *  - Nếu thêm thất bại thì throw
+     *  - Nếu thêm thành công sang B4
+     * B4: Trả về question
      */
     async createQuestion(questionDto: QuestionDto): Promise<Question> {
         try {
@@ -243,7 +273,12 @@ export class QuestionService {
 
             const result = await this.questionRepository.save(question);
 
-            return this.getOne(result.id);
+            if(result){
+                return this.getOneQuestionByQuestionId(result.id);
+            }
+            else{
+                throw new HttpException("Thêm bộ câu hỏi không thành công", 500);
+            }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -254,14 +289,23 @@ export class QuestionService {
     }
 
     /**
-     * cập nhật 1 bộ câu hỏi
-     * @param id 
-     * @param questionDto 
-     * @returns 
+     * cập nhật 1 question
+     * @param questionId: id của question cần thêm
+     * @param questionDto: thông tin question
+     * @returns question
+     * 
+     * B1: Kiểm tra question có tồn tại không
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy thì sang B2
+     * B2: Tạo objcet 
+     * B3: Cập nhật objcet vào db
+     *  - Nếu cập nhật không thành công thì throw
+     *  - Nếu cập nhật thành công sang B4
+     * B4: Trả về question
      */
-    async updateQuestion(id: string, questionDto: QuestionDto): Promise<Question> {
+    async updateQuestion(questionId: string, questionDto: QuestionDto): Promise<Question> {
         try {
-            const questionUpdate = await this.questionRepository.findOneBy({ id: id });
+            const questionUpdate = await this.questionRepository.findOneBy({ id: questionId });
 
             if (questionUpdate) {
                 const question = await this.questionRepository.create({
@@ -272,10 +316,10 @@ export class QuestionService {
                     ...questionDto
                 })
 
-                const result = await this.questionRepository.update({ id: id }, question);
+                const result = await this.questionRepository.update({ id: questionId }, question);
 
                 if (result.affected) {
-                    return this.getOne(id);
+                    return this.getOneQuestionByQuestionId(questionId);
                 }
                 else {
                     throw new HttpException("Cập nhật bộ câu hỏi không thành công", 500);
@@ -293,16 +337,24 @@ export class QuestionService {
     }
 
     /**
-     * xoá 1 bộ câu hỏi
-     * @param id 
-     * @returns 
+     * xoá 1 question
+     * @param questionId: id của question cần xoá
+     * @returns true
+     * 
+     * B1: Tìm kiếm question cần xoá
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy thì sang B2
+     * B2: Xoá question
+     *  - Nếu xoá không thành công thì throw
+     *  - Nếu xoá thành công sang B3
+     * B3: Trả về true
      */
-    async deleteQuestion(id: string): Promise<Boolean> {
+    async deleteQuestion(questionId: string): Promise<Boolean> {
         try {
-            const question = await this.questionRepository.findOneBy({ id: id });
+            const question = await this.questionRepository.findOneBy({ id: questionId });
 
             if (question) {
-                const result = await this.questionRepository.delete({ id: id });
+                const result = await this.questionRepository.delete({ id: questionId });
 
                 if (result.affected) {
                     return true;

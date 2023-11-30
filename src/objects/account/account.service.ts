@@ -13,13 +13,18 @@ export class AccountService {
     constructor(@InjectRepository(Account) private readonly accountRepository: Repository<Account>) { }
 
     /**
-     * hàm đăng nhập
+     * Hàm đăng nhập
      * @param email: email đăng nhập 
      * @param password: mất khẩu
      * @returns account cần tìm
      * 
-     * B1: tìm kiếm trong db 
-     * B2: nếu có trả về account cần tìm, nếu không trả về null
+     * B1: Tìm kiếm email đã được đăng ký chưa
+     *  - Nếu chưa đăng ký thì throw
+     *  - Nếu đăng ký rồi sang B2
+     * B2: Kiếm tra mật khẩu
+     *  - Nếu sai mật khẩu thì throw
+     *  - Nếu đúng thì sang B3
+     * B3: Trả về account cần tìm 
      */
     async login(email: string, password: string): Promise<Account> {
         try {
@@ -50,12 +55,19 @@ export class AccountService {
     }
 
     /**
-     * hàm thêm tài khoản (Đăng ký)
+     * Hàm thêm account (Đăng ký)
      * @param account: account cần thêm gồm (tên đăng nhập, mật khẩu, trạng thái(admin, user))
      * @returns acount được thêm
      * 
-     * B1: tìm kiếm trong db
-     * B2: nếu chưa tồn tại trong db thì thêm vào và trả về account vừa thêm, nếu có rồi thì trả về null 
+     * B1: Tìm kiếm email đã được đăng ký chưa
+     *  - Nếu đăng ký rồi thì throw
+     *  - Nếu chưa đăng ký sang B2
+     * B2: Validate dữ liệu
+     *  - Avatar: Nếu avatar không hợp lệ thì sử dụng avatar mặc định
+     * B3: Thêm account vào db
+     *  - Nếu thêm không thành công thì thromw
+     *  - Nếu thêm thành công thì sang B4
+     * B4: Trả về account vừa thêm
      */
     async create(account: AccountDto): Promise<Account> {
         try {
@@ -71,9 +83,14 @@ export class AccountService {
 
                 const result = await this.accountRepository.save(account);
 
-                return plainToInstance(Account, result, {
-                    excludeExtraneousValues: true,
-                })
+                if(result){
+                    return plainToInstance(Account, result, {
+                        excludeExtraneousValues: true,
+                    })
+                }
+                else{
+                    throw new HttpException("Đăng ký không thành công", 500);
+                }
             }
             else {
                 throw new HttpException("Tài khoản đã tồn tại", 500);
@@ -89,19 +106,24 @@ export class AccountService {
     }
 
     /**
-     * hàm xoá tài khoản
-     * @param id: id tài khoản cần xoá
-     * @returns true nếu xoá thành công, false nếu xoá không thành công
+     * Hàm xoá account
+     * @param accountId: id của account cần xoá
+     * @returns true 
      * 
-     * B1: tìm kiếm id cần xoá trong db
-     * B2: nếu tìm thấy và xoá thành công thì trả về true, nếu tìm thấy và xoá không thành công thì trả về false, nếu không tìm thấy throw exception
+     * B1: Tìm kiếm account cần xoá
+     *  - Nếu không tìm thấy thì throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Xoá account
+     *  - Nếu xoá không thành công thì throw
+     *  - Nếu xoá thành công thì sang B3
+     * B3: Trả về true
      */
-    async delete(id: string): Promise<boolean> {
+    async delete(accountId: string): Promise<boolean> {
         try {
-            const deleteId  = await this.accountRepository.findOneBy({ id: id });
+            const deleteAccount  = await this.accountRepository.findOneBy({ id: accountId });
 
-            if (deleteId) {
-                const result = await this.accountRepository.delete({ id: id });
+            if (deleteAccount) {
+                const result = await this.accountRepository.delete({ id: accountId });
                 if (result.affected) {
                     return true;
                 }
@@ -125,27 +147,35 @@ export class AccountService {
 
     /**
      * hàm đổi mật khẩu
-     * @param id: id của tài khoản cần đổi
+     * @param accountId: id của account cần đổi
      * @param password: mật khẩu mới
-     * @returns 
+     * @returns account vừa cập nhật
      * 
-     * B1: tìm kiếm trong db có tồn tại id cần thay đổi khônh
-     * B2: nếu có id và mk mới khác với mk cũ thì cho phép đổi mk, nếu mk mới giống mk cũ thì trả về Error
-     *     nếu không có id không trả về false
+     * B1: Tìm kiếm account cần đổi mật khẩu
+     *  - Nếu không tìm thấy throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Kiểm tra mật khẩu
+     *  - Nếu mật khẩu giống với mật khẩu hiện tại thì throw
+     *  - Nếu mật khẩu khác với mật khẩu hiện tại sang B3
+     * B3: Cập nhật mật khẩu
+     *  - Nếu cập nhật không thành công thì throw
+     *  - Nếu cập nhật thành công thì sang B4
+     * B4: Trả về Account của cập nhật
      */
-    async change(id: string, password: string): Promise<Account> {
+    async change(accountId: string, password: string): Promise<Account> {
         try {
-            const changeAccount = await this.accountRepository.findOneBy({ id: id });
+            const changeAccount = await this.accountRepository.findOneBy({ id: accountId });
 
             if (changeAccount) {
 
                 if (changeAccount.password === password) {
                     throw new HttpException("Mật khẩu cần khác với mật khẩu trước đó", 500);
                 }
-                const result = await this.accountRepository.update({ id: id }, { password: password })
+
+                const result = await this.accountRepository.update({ id: accountId }, { password: password })
 
                 if(result.affected){
-                    return plainToInstance(Account, await this.accountRepository.findOneBy({id: id}),{
+                    return plainToInstance(Account, await this.accountRepository.findOneBy({id: accountId}),{
                         excludeExtraneousValues: true
                     });
                 }
@@ -167,13 +197,20 @@ export class AccountService {
     }
 
     /**
-     * hàm quên mật khẩu
-     * @param email: email của tài khoản,
-     * @param password: password
+     * Hàm quên mật khẩu
+     * @param email: email của account cần đổi
+     * @param password: mật khẩu mới
      * 
-     * B1: tìm trong db có email cần tìm không
-     * B2: nếu có và mk mới khác mk cũ thì trả về tài khoản vừa cập nhật, nếu mk mới giống mk cũ throw
-     *     nếu không tìm thấy thì throw
+     * B1: Tìm kiếm email account cần đổi mật khẩu
+     *  - Nếu không tìm thấy throw
+     *  - Nếu tìm thấy sang B2
+     * B2: Kiểm tra mật khẩu
+     *  - Nếu mật khẩu giống với mật khẩu hiện tại thì throw
+     *  - Nếu mật khẩu khác với mật khẩu hiện tại sang B3
+     * B3: Cập nhật mật khẩu
+     *  - Nếu cập nhật không thành công thì throw
+     *  - Nếu cập nhật thành công thì sang B4
+     * B4: Trả về Account của cập nhật
      */
     async forget(email: string, password: string): Promise<Account> {
         try {
@@ -210,17 +247,7 @@ export class AccountService {
     }
 
     /**
-     * hàm lấy ra tất cả các account
-     * @returns danh sách các account
-     */
-    async getAll(): Promise<Account[]> {
-        const result = await this.accountRepository.find();
-
-        return result;
-    }
-
-    /**
-     * hàm lấy 1 account
+     * Hàm lấy 1 account
      * @returns account
      */
     async getOne(id): Promise<Account> {

@@ -16,9 +16,9 @@ export class CategoryController {
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Get(':id')
-    async getOneCategory(@Param('id') id: string, @Res() res){
-        const result = await this.categoryService.getOne(id);
+    @Get(':categoryId')
+    async getOneCategory(@Param('categoryId') categoryId: string, @Res() res){
+        const result = await this.categoryService.getOne(categoryId);
 
         return res.status(HttpStatus.OK).json(result);
     }   
