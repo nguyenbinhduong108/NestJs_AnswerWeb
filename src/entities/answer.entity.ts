@@ -28,7 +28,7 @@ export class Answer extends BaseIdentity{
     @Column("varchar", {default: 'https://i.imgur.com/oJN9YcQ.jpg'})
     image: string;
 
-    @ManyToOne(() => Question, (question) => question.answers)
+    @ManyToOne(() => Question, (question) => question.answers, { onDelete: "CASCADE" })
     @JoinColumn({
         name: "questionId",
         referencedColumnName: "id"

@@ -1,8 +1,8 @@
 import { HttpException, Injectable, Scope } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { plainToInstance } from "class-transformer";
 import { QuestionDto } from "src/dto/question.dto";
 import { Account } from "src/entities/account.entity";
-import { Answer } from "src/entities/answer.entity";
 import { Category } from "src/entities/category.entity";
 import { Question } from "src/entities/question.entity";
 import { Repository } from "typeorm";
@@ -219,7 +219,7 @@ export class QuestionService {
      * @param questionDto 
      * @returns 
      */
-    async create(questionDto: QuestionDto): Promise<Question> {
+    async createQuestion(questionDto: QuestionDto): Promise<Question> {
         try {
             if (questionDto.image === null || questionDto.image === undefined || questionDto.image === "") {
                 questionDto.image = "https://i.imgur.com/Ekd3MLm.jpg"
@@ -230,15 +230,15 @@ export class QuestionService {
                 throw new HttpException("Không tồn tại tài khoản", 400);
             }
 
-            const categorysId = await this.categoryRepository.findOneBy({ id: questionDto.categoryId });
-            if (!categorysId) {
+            const categoriesId = await this.categoryRepository.findOneBy({ id: questionDto.categoryId });
+            if (!categoriesId) {
                 throw new HttpException("Không tồn tại chủ đề", 400);
             }
 
             const question = this.questionRepository.create({
+                ...questionDto,
                 account: { id: questionDto.accountId },
                 category: { id: questionDto.categoryId },
-                ...questionDto
             });
 
             const result = await this.questionRepository.save(question);
@@ -259,7 +259,7 @@ export class QuestionService {
      * @param questionDto 
      * @returns 
      */
-    async update(id: string, questionDto: QuestionDto): Promise<Boolean> {
+    async updateQuestion(id: string, questionDto: QuestionDto): Promise<Question> {
         try {
             const questionUpdate = await this.questionRepository.findOneBy({ id: id });
 
@@ -267,13 +267,15 @@ export class QuestionService {
                 const question = await this.questionRepository.create({
                     account: { id: questionDto.accountId },
                     category: { id: questionDto.categoryId },
+                    turn: questionUpdate.turn,
+                    quantity: questionUpdate.quantity,
                     ...questionDto
                 })
 
                 const result = await this.questionRepository.update({ id: id }, question);
 
-                if (result.affected !== 0) {
-                    return true;
+                if (result.affected) {
+                    return await this.questionRepository.findOneBy({id: id})
                 }
                 else {
                     throw new HttpException("Cập nhật bộ câu hỏi không thành công", 500);
@@ -295,19 +297,23 @@ export class QuestionService {
      * @param id 
      * @returns 
      */
-    async delete(id: string): Promise<Boolean> {
+    async deleteQuestion(id: string): Promise<Boolean> {
         try {
             const question = await this.questionRepository.findOneBy({ id: id });
 
             if (question) {
-                const result = await this.questionRepository.delete({ id: id })
+                // console.log(question);
+                const result = await this.questionRepository.delete({ id: id });
 
-                if (result.affected !== 0) {
-                    return true;
-                }
-                else {
-                    throw new HttpException("Xoá không thành công", 500);
-                }
+                return true;
+                // console.log(question);
+
+                // if (result.affected) {
+                //     return true;
+                // }
+                // else {
+                //     throw new HttpException("Xoá không thành công", 500);
+                // }
             } else {
                 throw new HttpException("Không tìm thấy bộ câu hỏi cần xoá", 400);
             }

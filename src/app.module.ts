@@ -16,7 +16,7 @@ import { LoggerMiddleware } from './logger/logger.middleware';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
+  TypeOrmModule.forRoot({
       type: 'mysql',
       host: '127.0.0.1',
       port: 3306,
@@ -37,10 +37,11 @@ import { LoggerMiddleware } from './logger/logger.middleware';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({ path: '/*', method: RequestMethod.ALL})
-  }
-}
+export class AppModule{}
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(LoggerMiddleware)
+//       .forRoutes({ path: '/*', method: RequestMethod.ALL})
+//   }
+// }

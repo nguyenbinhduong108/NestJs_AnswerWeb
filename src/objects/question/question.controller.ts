@@ -42,23 +42,23 @@ export class QuestionController {
 
     @Post()
     async createQuestion(@Body() questionDto: QuestionDto, @Res() res) {
-        const result = await this.questionService.create(questionDto);
+        const result = await this.questionService.createQuestion(questionDto);
 
-        return res.status(HttpStatus.OK).json(result);
+        return res.status(HttpStatus.ACCEPTED).json(result);
     }
 
     @Put(":id")
     async updateQuestion(@Param("id") id: string, @Body() questionDto: QuestionDto, @Res() res) {
-        await this.questionService.update(id, questionDto);
+        const result = await this.questionService.updateQuestion(id, questionDto);
 
-        return res.status(HttpStatus.OK).json("Cập nhật câu hỏi thành công");
+        return res.status(HttpStatus.OK).json(result);
     }
 
     @Delete(":id")
     async deleteQuestion(@Param("id") id: string, @Res() res) {
-        await this.questionService.delete(id);
+        const result = await this.questionService.deleteQuestion(id);
 
-        return res.status(HttpStatus.OK).json("Xoá thành công");
+        return res.status(HttpStatus.OK).json(result);
     }
 }
 

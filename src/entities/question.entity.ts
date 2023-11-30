@@ -3,25 +3,32 @@ import { Account } from "./account.entity";
 import { Category } from "./category.entity";
 import { Answer } from "./answer.entity";
 import { BaseIdentity } from "src/shared/interface/baseIdentity.entity";
+import { Expose } from "class-transformer";
 
 @Entity({ name: "question" })
 export class Question extends BaseIdentity{
     @PrimaryGeneratedColumn('uuid')
+    @Expose()
     id: string;
 
     @Column("varchar")
+    @Expose()
     name: string;
 
     @Column("varchar", { default: "https://i.imgur.com/Ekd3MLm.jpg" })
+    @Expose()
     image: string;
 
     @Column('int', {default: 60})
+    @Expose()
     timer: number;
 
-    @Column('int')
+    @Column('int', {default: 0})
+    @Expose()
     turn: number;
 
     @Column('int', {default: 0})
+    @Expose()
     quantity: number;
 
     @ManyToOne(() => Account, (account) => account.questions)

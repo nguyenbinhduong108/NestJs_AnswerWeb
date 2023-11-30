@@ -1,6 +1,5 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
-import { type } from 'os';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString, Min } from "class-validator";
 
 export class QuestionDto{
     id: string;

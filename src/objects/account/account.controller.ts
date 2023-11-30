@@ -18,51 +18,57 @@ export class AccountController {
     //     return await this.accountService.getAll();
     // }
 
-    @Get('GetOne/:id')
-    async getOne(@Param('id') id: string, @Res() res) {
-        const result = await this.accountService.getOne(id);
+    // @Get('GetOne/:id')
+    // async getOne(@Param('id') id: string, @Res() res) {
+    //     const result = await this.accountService.getOne(id);
 
-        if (result) {
-            return res.status(HttpStatus.OK).json(result);
-        }
+    //     if (result) {
+    //         return res.status(HttpStatus.OK).json(result);
+    //     }
 
-        else {
-            return res.status(HttpStatus.NOT_FOUND).json(null);
-        }
-    }
+    //     else {
+    //         return res.status(HttpStatus.NOT_FOUND).json(null);
+    //     }
+    // }
 
     @Get('Login')
     async login(@Query('email') email: string, @Query('password') password: string, @Res() res) {
 
         const result = await this.accountService.login(email, password);
 
-        return res.status(HttpStatus.OK).json(result)
+        return res.status(HttpStatus.OK).json(result);
     }
 
-    @Post("/Create")
-    async createAccount(@Body() account: AccountDto) {
+    @Post("Create")
+    async createAccount(@Body() account: AccountDto, @Res() res) {
         const result = await this.accountService.create(account);
 
-        return result;
+        return res.status(HttpStatus.ACCEPTED).json(result);
+
     }
 
     @Put('Change/:id')
-    async changeAccount(@Param('id') id: string, @Query('password') password: string) {
+    async changeAccount(@Param('id') id: string, @Query('password') password: string, @Res() res) {
         const result = await this.accountService.change(id, password);
 
-        return result;
+        return res.status(HttpStatus.OK).json(result);
+
     }
 
     @Put('Forget/:email')
-    async forgetPassword(@Param('email') email: string, @Query('pasword') pasword: string) {
+    async forgetPassword(@Param('email') email: string, @Query('pasword') pasword: string, @Res() res) {
         const result = await this.accountService.forget(email, pasword);
 
-        return result;
+        return res.status(HttpStatus.OK).json(result);
+
     }
 
     @Delete(':id')
-    async deleteAccount(@Param('id') id: string) {
-        return await this.accountService.delete(id);
+    async deleteAccount(@Param('id') id: string, @Res() res) {
+        const result = await this.accountService.delete(id);
+
+        return res.status(HttpStatus.OK).json(result);
+
     }
 
 }

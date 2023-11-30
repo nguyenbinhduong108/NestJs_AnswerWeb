@@ -111,10 +111,6 @@ export class AnswerService {
         }
     } 
 
-    fibonaciMemoized(n:number){
-        
-    }
-
     async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto) {
         try {
             const question = await this.questionRepository.findOneBy({ id: questionId });
@@ -195,7 +191,7 @@ export class AnswerService {
                     return true;
                 }
                 else {
-                    return false
+                    throw new HttpException("Xoá không thành công", 500);
                 }
             }
 

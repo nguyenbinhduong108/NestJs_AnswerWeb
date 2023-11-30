@@ -13,28 +13,6 @@ export class AccountService {
     constructor(@InjectRepository(Account) private readonly accountRepository: Repository<Account>) { }
 
     /**
-     * hàm tìm kiếm theo id
-     * @param id: id cần tìm
-     * @returns true nếu tìm thấy, false nếu không tìm thấy
-     */
-    async findById(id: string): Promise<boolean> {
-        try {
-            const result = this.accountRepository.findOneBy({
-                id: id,
-            });
-
-            if (result) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        } catch (error) {
-            throw new HttpException("Lỗi serve", 500);
-        }
-    }
-
-    /**
      * hàm đăng nhập
      * @param email: email đăng nhập 
      * @param password: mất khẩu
@@ -120,15 +98,15 @@ export class AccountService {
      */
     async delete(id: string): Promise<boolean> {
         try {
-            const deleteId = await this.findById(id);
+            const deleteId  = await this.accountRepository.findOneBy({ id: id });
 
-            if (deleteId === true) {
+            if (deleteId) {
                 const result = await this.accountRepository.delete({ id: id });
                 if (result.affected) {
                     return true;
                 }
                 else {
-                    return false;
+                    throw new HttpException("Xoá không thành công", 500);
                 }
             }
             else {
@@ -155,7 +133,7 @@ export class AccountService {
      * B2: nếu có id và mk mới khác với mk cũ thì cho phép đổi mk, nếu mk mới giống mk cũ thì trả về Error
      *     nếu không có id không trả về false
      */
-    async change(id: string, password: string): Promise<boolean> {
+    async change(id: string, password: string): Promise<Account> {
         try {
             const changeAccount = await this.accountRepository.findOneBy({ id: id });
 
@@ -164,11 +142,19 @@ export class AccountService {
                 if (changeAccount.password === password) {
                     throw new HttpException("Mật khẩu cần khác với mật khẩu trước đó", 500);
                 }
-                await this.accountRepository.update({ id: id }, { password: password });
-                return true;
+                const result = await this.accountRepository.update({ id: id }, { password: password })
+
+                if(result.affected){
+                    return plainToInstance(Account, await this.accountRepository.findOneBy({id: id}),{
+                        excludeExtraneousValues: true
+                    });
+                }
+                else{
+                    throw new HttpException("Cập nhật mật khẩu không thàng công",500);
+                }
             }
             else {
-                return false;
+                throw new HttpException("Không tìm thấy tài khoản cần đổi mật khẩu", 404)
             }
 
         } catch (error) {
@@ -186,10 +172,10 @@ export class AccountService {
      * @param password: password
      * 
      * B1: tìm trong db có email cần tìm không
-     * B2: nếu có và mk mới khác mk cũ thì trả về true, nếu mk mới giống mk cũ throw
-     *     nếu không tìm thấy trả về false
+     * B2: nếu có và mk mới khác mk cũ thì trả về tài khoản vừa cập nhật, nếu mk mới giống mk cũ throw
+     *     nếu không tìm thấy thì throw
      */
-    async forget(email: string, password: string): Promise<boolean> {
+    async forget(email: string, password: string): Promise<Account> {
         try {
             const forgetAccount = await this.accountRepository.findOneBy({
                 email: email
@@ -200,12 +186,19 @@ export class AccountService {
                     throw new HttpException("Mật khẩu đã nhập trùng với mật khẩu trước đó", 500);
                 }
 
-                await this.accountRepository.update({ email: email }, { password: password });
-
-                return true;
+                const result = await this.accountRepository.update({ email: email }, { password: password });
+                
+                if(result.affected){
+                    return plainToInstance(Account, await this.accountRepository.findOneBy({email: email}),{
+                        excludeExtraneousValues: true
+                    });
+                }
+                else{
+                    throw new HttpException("Cập nhật mật khẩu không thàng công",500);
+                }
             }
             else {
-                return false;
+                throw new HttpException("Không tìm thấy email cần đổi mật khẩu", 404)
             }
         } catch (error) {
             if (error instanceof HttpException) {
@@ -226,6 +219,10 @@ export class AccountService {
         return result;
     }
 
+    /**
+     * hàm lấy 1 account
+     * @returns account
+     */
     async getOne(id): Promise<Account> {
         const result = await this.accountRepository.findOneBy({ id: id });
 
