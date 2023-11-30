@@ -31,7 +31,7 @@ export class Question extends BaseIdentity{
     @Expose()
     quantity: number;
 
-    @ManyToOne(() => Account, (account) => account.questions)
+    @ManyToOne(() => Account, (account) => account.questions, {onDelete: "CASCADE"})
     @JoinColumn({
         name: "accountId",
         referencedColumnName: "id"
