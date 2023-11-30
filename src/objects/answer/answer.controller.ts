@@ -1,9 +1,12 @@
 import { AnswerDto } from 'src/dto/answer.dto';
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, Scope } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AnswerService } from "./answer.service";
 
-@Controller('answer')
+@Controller({
+    path:'answers',
+    scope: Scope.REQUEST
+})
 @ApiTags('Answer')
 export class AnswerController {
 

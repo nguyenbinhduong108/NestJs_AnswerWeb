@@ -185,9 +185,9 @@ export class QuestionService {
                     turn: true,
                     quantity: true,
                     account: {
+                        id: true,
                         username: true,
                     },
-                    // category: true,
                     category: {
                         id: true,
                         name: true,
@@ -243,7 +243,7 @@ export class QuestionService {
 
             const result = await this.questionRepository.save(question);
 
-            return result;
+            return this.getOne(result.id);
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -275,7 +275,7 @@ export class QuestionService {
                 const result = await this.questionRepository.update({ id: id }, question);
 
                 if (result.affected) {
-                    return await this.questionRepository.findOneBy({id: id})
+                    return this.getOne(id);
                 }
                 else {
                     throw new HttpException("Cập nhật bộ câu hỏi không thành công", 500);
@@ -302,18 +302,14 @@ export class QuestionService {
             const question = await this.questionRepository.findOneBy({ id: id });
 
             if (question) {
-                // console.log(question);
                 const result = await this.questionRepository.delete({ id: id });
 
-                return true;
-                // console.log(question);
-
-                // if (result.affected) {
-                //     return true;
-                // }
-                // else {
-                //     throw new HttpException("Xoá không thành công", 500);
-                // }
+                if (result.affected) {
+                    return true;
+                }
+                else {
+                    throw new HttpException("Xoá không thành công", 500);
+                }
             } else {
                 throw new HttpException("Không tìm thấy bộ câu hỏi cần xoá", 400);
             }
@@ -344,10 +340,10 @@ export class QuestionService {
     }
 
     /**
-     * cập nhật lại tổng số câu hỏi
+     * cập nhật lại tổng số câu hỏi khi thêm câu hỏi
      * @param id 
      */
-    async updateQuantityOfQuestion(id: string): Promise<void>{
+    async updateAddQuantityOfQuestion(id: string): Promise<void>{
         try{
             const result = await this.questionRepository.findOneBy({id: id});
 
@@ -359,4 +355,23 @@ export class QuestionService {
         }
     }
 
+    /**
+     * cập nhật lại tổng số câu hỏi khi xoá câu hỏi
+     * @param id 
+     */
+    async updateMinusQuantityOfQuestion(id: string): Promise<void>{
+        try{
+            const result = await this.questionRepository.findOneBy({id: id});
+
+            console.log(result.quantity)
+
+            result.quantity--;
+
+            console.log(result.quantity)
+
+            await this.questionRepository.update({id: id}, {quantity: result.quantity});
+        } catch(error){
+            throw new HttpException("Lỗi cập nhật tổng số câu hỏi", 500);
+        }
+    }
 }

@@ -19,10 +19,10 @@ export class AnswerService {
 
     /**
      * lấy ra tất cả các câu hỏi theo id của bộ câu hỏi
-     * @param id: id của bộ câu hỏi
+     * @param id: id của bộ câu hỏi lấy 
      * @returns 
      */
-    async getAllAnswerByQuestionId(id: string) {
+    async getAllAnswerByQuestionId(id: string): Promise<Answer[]> {
         try {
             const questionId = await this.questionRepository.findOneBy({ id: id });
 
@@ -110,8 +110,13 @@ export class AnswerService {
             }
         }
     } 
-
-    async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto) {
+    /**
+     * hàm thêm 
+     * @param questionId 
+     * @param answerDto 
+     * @returns 
+     */
+    async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto): Promise<Answer> {
         try {
             const question = await this.questionRepository.findOneBy({ id: questionId });
 
@@ -128,9 +133,9 @@ export class AnswerService {
 
                 const result = await this.answerRepository.save(answer);
 
-                this.questionService.updateQuantityOfQuestion(questionId);
+                this.questionService.updateAddQuantityOfQuestion(questionId);
 
-                return result;
+                return this.getOneById(result.id);
             }
             else {
                 throw new HttpException("Không tồn tại bộ câu hỏi cần tìm", 404);
@@ -158,7 +163,7 @@ export class AnswerService {
                 const result = await this.answerRepository.update({id: id}, answerDto);
 
                 if(result.affected){
-                    return result;
+                    return this.getOneById(id);
                 }
 
                 else{
@@ -184,10 +189,14 @@ export class AnswerService {
         try {
             const deleteAnswer = await this.answerRepository.findOneBy({ id: id });
 
+            const questionId = (await (this.getOneById(id))).question.id;
+
             if (deleteAnswer) {
                 const result = await this.answerRepository.delete({ id: id });
 
+                
                 if (result.affected) {
+                    this.questionService.updateMinusQuantityOfQuestion(questionId);
                     return true;
                 }
                 else {

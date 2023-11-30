@@ -4,7 +4,7 @@ import { QuestionService } from "./question.service";
 import { QuestionDto } from "src/dto/question.dto";
 
 @Controller({
-    path: 'question',
+    path: 'questions',
     scope: Scope.REQUEST,
 })
 @ApiTags('Question')
