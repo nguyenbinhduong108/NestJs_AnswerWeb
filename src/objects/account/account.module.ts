@@ -3,11 +3,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Account } from "src/entities/account.entity";
 import { AccountController } from "./account.controller";
 import { AccountService } from "./account.service";
-import { ImgurService } from "src/shared/uploadImage/imgur.service";
 
 @Module({
     imports: [TypeOrmModule.forFeature([Account])],
     controllers: [AccountController],
-    providers: [AccountService, ImgurService],
+    providers: [AccountService],
 })
 export class AccountModule{}
