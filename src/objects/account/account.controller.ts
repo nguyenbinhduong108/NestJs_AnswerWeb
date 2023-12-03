@@ -18,7 +18,7 @@ export class AccountController {
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Post("Create")
+    @Post("Register")
     async createAccount(@Body() account: AccountDto, @Res() res) {
         const result = await this.accountService.create(account);
 
@@ -47,7 +47,6 @@ export class AccountController {
         const result = await this.accountService.delete(accountId);
 
         return res.status(HttpStatus.OK).json(result);
-
     }
 
 }
