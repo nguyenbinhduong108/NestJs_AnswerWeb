@@ -1,4 +1,3 @@
-import { ImgurService } from '../../shared/uploadImage/imgur.service';
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res } from "@nestjs/common";
 import { AccountService } from "./account.service";
 import { ApiTags } from "@nestjs/swagger";
