@@ -21,11 +21,11 @@ import { ConfigModule } from '@nestjs/config';
   TypeOrmModule.forRoot({
       type: 'mysql',
 
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      host: 'mysql-547bab7-answerquestion-web.a.aivencloud.com',
+      port: 14417,
+      username: 'avnadmin',
+      password: 'AVNS_I-VqybU_lp3A_W0tud3',
+      database: 'mydatabase',
       entities: [Account, Category, Question, Answer],
       synchronize: true,
       // logger: 'simple-console',
