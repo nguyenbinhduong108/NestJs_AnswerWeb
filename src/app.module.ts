@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { AccountModule } from './objects/account/account.module';
-import { ImgurModule } from './shared/UploadImage/imgur.module';
+import { ImgurModule } from './shared/uploadImage/imgur.module';
 import { Category } from './entities/category.entity';
 import { CategoryModule } from './objects/category/category.module';
 import { Question } from './entities/question.entity';
@@ -21,11 +21,11 @@ import { ConfigModule } from '@nestjs/config';
   TypeOrmModule.forRoot({
       type: 'mysql',
 
-      host: 'mysql-547bab7-answerquestion-web.a.aivencloud.com',
-      port: 14417,
-      username: 'avnadmin',
-      password: 'AVNS_I-VqybU_lp3A_W0tud3',
-      database: 'mydatabase',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: [Account, Category, Question, Answer],
       synchronize: true,
       // logger: 'simple-console',
