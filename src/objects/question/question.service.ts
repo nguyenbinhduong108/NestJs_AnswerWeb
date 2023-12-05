@@ -43,6 +43,9 @@ export class QuestionService {
                     timer: true,
                     turn: true,
                     quantity: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    deletedAt: true,
                     account: {
                         id: true,
                         username: true,
@@ -94,6 +97,9 @@ export class QuestionService {
                     timer: true,
                     turn: true,
                     quantity: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    deletedAt: true,
                     account: {
                         id: true,
                         username: true,
@@ -149,6 +155,9 @@ export class QuestionService {
                     timer: true,
                     turn: true,
                     quantity: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    deletedAt: true,
                     account: {
                         id: true,
                         username: true,
@@ -204,6 +213,9 @@ export class QuestionService {
                     timer: true,
                     turn: true,
                     quantity: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    deletedAt: true,
                     account: {
                         id: true,
                         username: true,
@@ -311,6 +323,7 @@ export class QuestionService {
                 const question = await this.questionRepository.create({
                     account: { id: questionDto.accountId },
                     category: { id: questionDto.categoryId },
+                    updatedAt: Date.now(),
                     turn: questionUpdate.turn,
                     quantity: questionUpdate.quantity,
                     ...questionDto
