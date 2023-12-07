@@ -11,7 +11,7 @@ export class ImgurController{
 
     @Post()
     @UseInterceptors(FileInterceptor('avatar'))
-    async uploadImgage(@UploadedFile() avatarFile) {
+    async uploadImgage(@UploadedFile() avatarFile): Promise<string> {
         const result = await this.imgurService.uploadImageToImgur(avatarFile.buffer);
 
         return result;

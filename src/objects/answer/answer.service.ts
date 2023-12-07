@@ -59,12 +59,8 @@ export class AnswerService {
 
                 this.questionService.updateTurnOfQuestion(questionId);
 
-                if(result.length !== 0){
                     return result;
-                }
-                else{
-                    throw new HttpException("Bộ câu hỏi chưa có câu hỏi nào", 404);
-                }
+                
             }
             else {
                 throw new HttpException("Không tồn tại question cần tìm", 404);
@@ -115,12 +111,8 @@ export class AnswerService {
                 }
             })
 
-            if (result) {
                 return result;
-            }
-            else {
-                throw new HttpException("Không tìm thấy câu hỏi", 404);
-            }
+            
 
         } catch (error) {
             if (error instanceof HttpException) {
@@ -131,6 +123,7 @@ export class AnswerService {
             }
         }
     } 
+
     /**
      * hàm thêm answer cho 1 question
      * @param questionId: id của question

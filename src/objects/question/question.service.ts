@@ -58,11 +58,8 @@ export class QuestionService {
                 },
             });
 
-            if (result.length !== 0) {
                 return result;
-            } else {
-                throw new HttpException("Không có bộ câu hỏi nào", 404);
-            }
+            
 
         } catch (error) {
             if (error instanceof HttpException) {
@@ -117,11 +114,8 @@ export class QuestionService {
                 }
             });
 
-            if (result.length !== 0) {
                 return result;
-            } else {
-                throw new HttpException("Không có bộ câu hỏi nào", 404)
-            }
+            
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -175,11 +169,8 @@ export class QuestionService {
                 }
             });
 
-            if (result.length !== 0) {
-                return result;
-            } else {
-                throw new HttpException("Không có bộ câu hỏi nào", 404)
-            }
+            return result;
+            
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -231,11 +222,8 @@ export class QuestionService {
                 }
             })
 
-            if (result) {
-                return result;
-            } else {
-                throw new HttpException("Không có bộ câu hỏi nào", 404)
-            }
+            return result;
+            
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
