@@ -23,7 +23,6 @@ export class QuestionDto{
     categoryId: string;
 
     @IsNumber({},{message: "Giới hạn thời gian phải là số"})
-    @Min(60, {message: "Thời gian tối thiểu phải là 60s"})
-    @ApiProperty({type: Number, default: 60})
+    @ApiProperty({type: Number})
     timer: number;
 }
