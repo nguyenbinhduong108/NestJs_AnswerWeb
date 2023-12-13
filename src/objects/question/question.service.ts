@@ -416,11 +416,7 @@ export class QuestionService {
         try{
             const result = await this.questionRepository.findOneBy({id: id});
 
-            console.log(result.quantity)
-
             result.quantity--;
-
-            console.log(result.quantity)
 
             await this.questionRepository.update({id: id}, {quantity: result.quantity});
         } catch(error){

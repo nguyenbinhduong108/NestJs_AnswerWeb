@@ -19,17 +19,17 @@ export class Question extends BaseIdentity{
     @Expose()
     image: string;
 
-    @Column('int', {default: 60})
+    @Column('int')
     @Expose()
     timer: number;
 
     @Column('int', {default: 0})
     @Expose()
-    turn: number;
+    quantity: number;
 
     @Column('int', {default: 0})
     @Expose()
-    quantity: number;
+    turn: number;
 
     @ManyToOne(() => Account, (account) => account.questions, {onDelete: "CASCADE"})
     @JoinColumn({
