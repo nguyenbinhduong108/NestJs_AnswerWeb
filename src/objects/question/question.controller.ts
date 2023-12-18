@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Res, Scope } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, Res, Scope } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { QuestionService } from "./question.service";
 import { QuestionDto } from "src/dto/question.dto";
@@ -13,22 +13,22 @@ export class QuestionController {
     constructor(private readonly questionService: QuestionService) { }
 
     @Get("GetAll")
-    async getAllQuestion(@Res() res) {
-        const result = await this.questionService.getAll();
+    async getAllQuestion(@Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search: string ,@Res() res) {
+        const result = await this.questionService.getAll(limit, offset, search);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Get("getAllQuestionByAccountId/:accountId")
-    async getAllQuestionByAccountId(@Param("accountId") accountId: string, @Res() res) {
-        const result = await this.questionService.getAllQuestionByAccountId(accountId);
+    async getAllQuestionByAccountId(@Param("accountId") accountId: string, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search: string ,@Res() res) {
+        const result = await this.questionService.getAllQuestionByAccountId(accountId, limit, offset, search);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Get("getAllQuestionByCategoryId/:categoryId")
-    async getAllQuestionByCategoryId(@Param("categoryId") categoryId: string, @Res() res) {
-        const result = await this.questionService.getAllQuestionByCategoryId(categoryId);
+    async getAllQuestionByCategoryId(@Param("categoryId") categoryId: string, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search: string ,@Res() res) {
+        const result = await this.questionService.getAllQuestionByCategoryId(categoryId, limit, offset, search);
 
         return res.status(HttpStatus.OK).json(result);
     }

@@ -5,7 +5,7 @@ import { QuestionDto } from "src/dto/question.dto";
 import { Account } from "src/entities/account.entity";
 import { Category } from "src/entities/category.entity";
 import { Question } from "src/entities/question.entity";
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 
 @Injectable({
     scope: Scope.REQUEST,
@@ -29,7 +29,7 @@ export class QuestionService {
      *  - Nếu tìm thấy thì sang B2
      * B2: Trả về danh sách question
      */
-    async getAll(): Promise<Question[]> {
+    async getAll(limint: number, offset: number, search: string): Promise<Question[]> {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -56,10 +56,15 @@ export class QuestionService {
                         image: true,
                     },
                 },
+                where: {
+                    name: Like(`%${search}%`)
+                },
+                take: limint,
+                skip: offset,
             });
 
-                return result;
-            
+            return result;
+
 
         } catch (error) {
             if (error instanceof HttpException) {
@@ -80,7 +85,7 @@ export class QuestionService {
      *  - Nếu tìm thấy sang B2
      * B2: Trả về danh sách question
      */
-    async getAllQuestionByAccountId(accountId: string): Promise<Question[]> {
+    async getAllQuestionByAccountId(accountId: string, limint: number, offset: number, search: string): Promise<Question[]> {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -110,12 +115,15 @@ export class QuestionService {
                 where: {
                     account: {
                         id: accountId
-                    }
-                }
+                    },
+                    name: Like(`%${search}%`)
+                },
+                take: limint,
+                skip: offset,
             });
 
-                return result;
-            
+            return result;
+
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -135,7 +143,7 @@ export class QuestionService {
      *  - Nếu tìm thấy sang B2
      * B2: Trả về danh sách question
      */
-    async getAllQuestionByCategoryId(categoryId: string): Promise<Question[]> {
+    async getAllQuestionByCategoryId(categoryId: string, limint: number, offset: number, search: string): Promise<Question[]> {
         try {
             const result = await this.questionRepository.find({
                 relations: {
@@ -165,12 +173,15 @@ export class QuestionService {
                 where: {
                     category: {
                         id: categoryId
-                    }
-                }
+                    },
+                    name: Like(`%${search}%`)
+                },
+                take: limint,
+                skip: offset,
             });
 
             return result;
-            
+
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -223,7 +234,7 @@ export class QuestionService {
             })
 
             return result;
-            
+
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -273,10 +284,10 @@ export class QuestionService {
 
             const result = await this.questionRepository.save(question);
 
-            if(result){
+            if (result) {
                 return this.getOneQuestionByQuestionId(result.id);
             }
-            else{
+            else {
                 throw new HttpException("Thêm bộ câu hỏi không thành công", 500);
             }
         } catch (error) {
@@ -396,14 +407,14 @@ export class QuestionService {
      * cập nhật lại tổng số câu hỏi khi thêm câu hỏi
      * @param id 
      */
-    async updateAddQuantityOfQuestion(id: string): Promise<void>{
-        try{
-            const result = await this.questionRepository.findOneBy({id: id});
+    async updateAddQuantityOfQuestion(id: string): Promise<void> {
+        try {
+            const result = await this.questionRepository.findOneBy({ id: id });
 
             result.quantity++;
 
-            await this.questionRepository.update({id: id}, {quantity: result.quantity});
-        } catch(error){
+            await this.questionRepository.update({ id: id }, { quantity: result.quantity });
+        } catch (error) {
             throw new HttpException("Lỗi cập nhật tổng số câu hỏi", 500);
         }
     }
@@ -412,14 +423,14 @@ export class QuestionService {
      * cập nhật lại tổng số câu hỏi khi xoá câu hỏi
      * @param id 
      */
-    async updateMinusQuantityOfQuestion(id: string): Promise<void>{
-        try{
-            const result = await this.questionRepository.findOneBy({id: id});
+    async updateMinusQuantityOfQuestion(id: string): Promise<void> {
+        try {
+            const result = await this.questionRepository.findOneBy({ id: id });
 
             result.quantity--;
 
-            await this.questionRepository.update({id: id}, {quantity: result.quantity});
-        } catch(error){
+            await this.questionRepository.update({ id: id }, { quantity: result.quantity });
+        } catch (error) {
             throw new HttpException("Lỗi cập nhật tổng số câu hỏi", 500);
         }
     }
