@@ -29,8 +29,11 @@ export class QuestionService {
      *  - Nếu tìm thấy thì sang B2
      * B2: Trả về danh sách question
      */
-    async getAll(limint: number, offset: number, search: string): Promise<Question[]> {
+    async getAll(limit: number, offset: number, search: string): Promise<{}> {
         try {
+
+            const all = await this.questionRepository.count();
+
             const result = await this.questionRepository.find({
                 relations: {
                     account: true,
@@ -59,11 +62,14 @@ export class QuestionService {
                 where: {
                     name: Like(`%${search}%`)
                 },
-                take: limint,
+                take: limit,
                 skip: offset,
             });
 
-            return result;
+            return {
+                total: Math.ceil(all/limit),
+                data: result,
+            };
 
 
         } catch (error) {
@@ -85,8 +91,14 @@ export class QuestionService {
      *  - Nếu tìm thấy sang B2
      * B2: Trả về danh sách question
      */
-    async getAllQuestionByAccountId(accountId: string, limint: number, offset: number, search: string): Promise<Question[]> {
+    async getAllQuestionByAccountId(accountId: string, limit: number, offset: number, search: string): Promise<{}> {
         try {
+            const all = await this.questionRepository.countBy({
+                account:{
+                    id: accountId,
+                }
+            })
+
             const result = await this.questionRepository.find({
                 relations: {
                     account: true,
@@ -118,11 +130,14 @@ export class QuestionService {
                     },
                     name: Like(`%${search}%`)
                 },
-                take: limint,
+                take: limit,
                 skip: offset,
             });
 
-            return result;
+            return {
+                total: Math.ceil(all/limit),
+                data: result,
+            };
 
         } catch (error) {
             if (error instanceof HttpException) {
@@ -143,8 +158,14 @@ export class QuestionService {
      *  - Nếu tìm thấy sang B2
      * B2: Trả về danh sách question
      */
-    async getAllQuestionByCategoryId(categoryId: string, limint: number, offset: number, search: string): Promise<Question[]> {
+    async getAllQuestionByCategoryId(categoryId: string, limit: number, offset: number, search: string): Promise<{}> {
         try {
+            const all = await this.questionRepository.countBy({
+                category: {
+                    id: categoryId,
+                }
+            })
+
             const result = await this.questionRepository.find({
                 relations: {
                     account: true,
@@ -176,11 +197,14 @@ export class QuestionService {
                     },
                     name: Like(`%${search}%`)
                 },
-                take: limint,
+                take: limit,
                 skip: offset,
             });
 
-            return result;
+            return {
+                total: Math.ceil(all/limit),
+                data: result,
+            };
 
         } catch (error) {
             if (error instanceof HttpException) {
