@@ -13,21 +13,21 @@ export class QuestionController {
     constructor(private readonly questionService: QuestionService) { }
 
     @Get("GetAll")
-    async getAllQuestion(@Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search: string ,@Res() res) {
+    async getAllQuestion(@Res() res, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search?: string) {
         const result = await this.questionService.getAll(limit, offset, search);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Get("getAllQuestionByAccountId/:accountId")
-    async getAllQuestionByAccountId(@Param("accountId") accountId: string, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search: string ,@Res() res) {
+    async getAllQuestionByAccountId(@Param("accountId") accountId: string, @Res() res, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search?: string) {
         const result = await this.questionService.getAllQuestionByAccountId(accountId, limit, offset, search);
 
         return res.status(HttpStatus.OK).json(result);
     }
 
     @Get("getAllQuestionByCategoryId/:categoryId")
-    async getAllQuestionByCategoryId(@Param("categoryId") categoryId: string, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search: string ,@Res() res) {
+    async getAllQuestionByCategoryId(@Param("categoryId") categoryId: string, @Res() res, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search?: string) {
         const result = await this.questionService.getAllQuestionByCategoryId(categoryId, limit, offset, search);
 
         return res.status(HttpStatus.OK).json(result);
