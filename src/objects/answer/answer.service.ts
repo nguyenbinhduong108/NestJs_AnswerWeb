@@ -157,7 +157,7 @@ export class AnswerService {
 
                 const result = await this.answerRepository.save(answer);
 
-                this.questionService.updateAddQuantityOfQuestion(questionId);
+                await this.questionService.updateAddQuantityOfQuestion(questionId);
 
                 return this.getOneById(result.id);
             }
@@ -246,17 +246,18 @@ export class AnswerService {
 
 
             if (deleteAnswer) {
+                const questionId = await this.getOneById(answerId);
+                await this.questionService.updateMinusQuantityOfQuestion(questionId.question.id);
                 const result = await this.answerRepository.delete({ id: answerId });
 
-                if (result.affected) {
-                    const questionId = (await (this.getOneById(answerId))).question.id;
-                    this.questionService.updateMinusQuantityOfQuestion(questionId);
+                if(result.affected){
                     return true;
                 }
                 else {
                     throw new HttpException("Xoá không thành công", 500);
                 }
             }
+
 
             else {
                 throw new HttpException("Không tìm thấy câu hỏi cần xoá", 404);

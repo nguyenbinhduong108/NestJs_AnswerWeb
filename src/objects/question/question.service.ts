@@ -450,9 +450,7 @@ export class QuestionService {
     async updateMinusQuantityOfQuestion(id: string): Promise<void> {
         try {
             const result = await this.questionRepository.findOneBy({ id: id });
-
             result.quantity--;
-
             await this.questionRepository.update({ id: id }, { quantity: result.quantity });
         } catch (error) {
             throw new HttpException("Lỗi cập nhật tổng số câu hỏi", 500);
