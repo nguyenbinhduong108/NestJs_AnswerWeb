@@ -4,6 +4,7 @@ import { Category } from "./category.entity";
 import { Answer } from "./answer.entity";
 import { BaseIdentity } from "src/shared/interface/baseIdentity.entity";
 import { Expose } from "class-transformer";
+import { Leaderboard } from "./leaderboard.entity";
 
 @Entity({ name: "question" })
 export class Question extends BaseIdentity{
@@ -47,4 +48,7 @@ export class Question extends BaseIdentity{
 
     @OneToMany(() => Answer, (answer) => answer.question)
     answers: Answer[];
+
+    @OneToMany(() => Leaderboard,(leaderboard) => leaderboard.question)
+    leaderboards: Leaderboard[];
 }

@@ -31,7 +31,7 @@ export class QuestionService {
    */
   async getAll(limit: number, offset: number, search: string): Promise<{}> {
     try {
-      let all: number;
+      let all: number = 0;
       let result: Array<Question> = [];
 
       if (search !== undefined) {

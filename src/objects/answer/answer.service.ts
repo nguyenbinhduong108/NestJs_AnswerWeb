@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Scope } from "@nestjs/common";
+import { HttpException, Inject, Injectable, Scope } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AnswerDto } from "src/dto/answer.dto";
 import { Answer } from "src/entities/answer.entity";
@@ -14,7 +14,7 @@ export class AnswerService {
     constructor(
         @InjectRepository(Answer) private readonly answerRepository: Repository<Answer>,
         @InjectRepository(Question) private readonly questionRepository: Repository<Question>,
-        private readonly questionService: QuestionService,
+        @Inject(QuestionService) private readonly questionService: QuestionService,
     ) { }
 
     /**

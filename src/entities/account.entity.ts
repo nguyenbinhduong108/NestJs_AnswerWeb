@@ -2,6 +2,7 @@ import { BaseIdentity } from './../shared/interface/baseIdentity.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Question } from "./question.entity";
 import { Expose } from "class-transformer";
+import { Leaderboard } from './leaderboard.entity';
 
 @Entity({ name: 'account' })
 export class Account extends BaseIdentity{
@@ -30,4 +31,7 @@ export class Account extends BaseIdentity{
 
     @OneToMany(() => Question, (question) => question.account)
     questions: Question[];
+
+    @OneToMany(() => Leaderboard,(leaderboard) => leaderboard.account)
+    leaderboards: Leaderboard[];
 }  

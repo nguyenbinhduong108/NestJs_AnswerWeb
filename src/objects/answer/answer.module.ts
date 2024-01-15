@@ -5,6 +5,7 @@ import { AnswerController } from './answer.controller';
 import { AnswerService } from './answer.service';
 import { Question } from 'src/entities/question.entity';
 import { QuestionModule } from '../question/question.module';
+import { QuestionService } from '../question/question.service';
 
 @Module({
     imports: [
