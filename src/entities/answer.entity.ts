@@ -10,17 +10,20 @@ export class Answer extends BaseIdentity{
     @Column('varchar')
     title: string;
 
-    @Column('varchar')
-    answerA: string;
+    @Column('simple-array')
+    answers: string[];
 
-    @Column('varchar')
-    answerB: string;
+    // @Column('varchar')
+    // answerA: string;
 
-    @Column('varchar')
-    answerC: string;
+    // @Column('varchar')
+    // answerB: string;
 
-    @Column('varchar')
-    answerD: string;
+    // @Column('varchar')
+    // answerC: string;
+
+    // @Column('varchar')
+    // answerD: string;
 
     @Column('varchar')
     trueAnswer: string;

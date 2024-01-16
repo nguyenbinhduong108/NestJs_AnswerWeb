@@ -10,24 +10,8 @@ export class AnswerDto {
     title: string;
 
     @IsNotEmpty({message: "Câu trả lời không được để trống"})
-    @IsString({message: "Câu trả lời không hợp lệ"})
-    @ApiProperty({ type: String })
-    answerA: string;
-
-    @IsNotEmpty({message: "Câu trả lời không được để trống"})
-    @IsString({message: "Câu trả lời không hợp lệ"})
-    @ApiProperty({ type: String })
-    answerB: string;
-
-    @IsNotEmpty({message: "Câu trả lời không được để trống"})
-    @IsString({message: "Câu trả lời không hợp lệ"})
-    @ApiProperty({ type: String })
-    answerC: string;
-
-    @IsNotEmpty({message: "Câu trả lời không được để trống"})
-    @IsString({message: "Câu trả lời không hợp lệ"})
-    @ApiProperty({ type: String })
-    answerD: string;
+    @ApiProperty({ type: Array<string> })
+    answers: Array<string>;
 
     @IsNotEmpty({message: "Đáp án không được để trống"})
     @IsString({message: "Đáp án không hợp lệ"})

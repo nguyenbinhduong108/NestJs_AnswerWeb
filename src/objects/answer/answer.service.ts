@@ -42,10 +42,7 @@ export class AnswerService {
                         id: true,
                         title: true,
                         image: true,
-                        answerA: true,
-                        answerB: true,
-                        answerC: true,
-                        answerD: true,
+                        answers: true,
                         trueAnswer: true,
                         question: {
                             id: true,
@@ -96,10 +93,7 @@ export class AnswerService {
                     id: true,
                     title: true,
                     image: true,
-                    answerA: true,
-                    answerB: true,
-                    answerC: true,
-                    answerD: true,
+                    answers: true,
                     trueAnswer: true,
                     question: {
                         id: true,
