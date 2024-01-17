@@ -586,11 +586,11 @@ export class QuestionService {
    * cập nhật lại tổng số câu hỏi khi thêm câu hỏi
    * @param id
    */
-  async updateAddQuantityOfQuestion(id: string): Promise<void> {
+  async updateAddQuantityOfQuestion(id: string, slot: number): Promise<void> {
     try {
       const result = await this.questionRepository.findOneBy({ id: id });
 
-      result.quantity++;
+      result.quantity += slot;
 
       await this.questionRepository.update(
         { id: id },
