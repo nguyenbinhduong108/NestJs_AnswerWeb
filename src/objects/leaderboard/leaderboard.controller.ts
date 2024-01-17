@@ -23,7 +23,7 @@ export class LeaderboardController{
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Delete()
+    @Delete(':accountId')
     async deleteLeaderboard(@Res() res, @Param('accountId') accountId: string){
         const result = await this.leaderboardService.deleteLeaderboard(accountId);
 
