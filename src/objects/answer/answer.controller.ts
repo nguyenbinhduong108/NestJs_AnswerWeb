@@ -27,7 +27,7 @@ export class AnswerController {
     }
 
     @Post(":questionId")
-    async creatAnswerByQuestionId(@Param("questionId") questionId: string, @Body() answerDto: AnswerDto, @Res() res) {
+    async creatAnswerByQuestionId(@Param("questionId") questionId: string, @Body() answerDto: Array<AnswerDto>, @Res() res) {
         const result = await this.answerService.creatAnswerByQuestionId(questionId, answerDto);
 
         return res.status(HttpStatus.ACCEPTED).json(result);
