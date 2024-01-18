@@ -2,9 +2,10 @@ import { Expose } from 'class-transformer';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from './question.entity';
 import { Account } from './account.entity';
+import { BaseIdentity } from 'src/shared/interface/baseIdentity.entity';
 
 @Entity({ name: 'leaderboard' })
-export class Leaderboard {
+export class Leaderboard extends BaseIdentity{
     @PrimaryGeneratedColumn('uuid')
     @Expose()
     id: string;

@@ -10,8 +10,8 @@ export class LeaderboardController{
     constructor(private readonly leaderboardService: LeaderboardService) { }
 
     @Get()
-    async getLeaderboard(@Res() res, @Query('questionId') questionId: string, @Query('top') top: number ){
-        const result = await this.leaderboardService.getLeaderboard(questionId, top);
+    async getLeaderboard(@Res() res, @Query('questionId') questionId: string){
+        const result = await this.leaderboardService.getLeaderboard(questionId);
 
         return res.status(HttpStatus.OK).json(result);
     }

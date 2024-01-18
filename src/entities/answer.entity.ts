@@ -11,19 +11,7 @@ export class Answer extends BaseIdentity{
     title: string;
 
     @Column('simple-array')
-    answers: string[];
-
-    // @Column('varchar')
-    // answerA: string;
-
-    // @Column('varchar')
-    // answerB: string;
-
-    // @Column('varchar')
-    // answerC: string;
-
-    // @Column('varchar')
-    // answerD: string;
+    answers: Array<string>;
 
     @Column('varchar')
     trueAnswer: string;

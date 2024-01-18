@@ -129,7 +129,7 @@ export class AnswerService {
      * B5: Cập nhật lại quantity của question
      * B6: Trả về answer của thêm
      */
-    async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto[]) {
+    async creatAnswerByQuestionId(questionId: string, answerDto: AnswerDto[]): Promise<Answer[]> {
         try {
             const question = await this.questionRepository.findOneBy({
                 id: questionId,

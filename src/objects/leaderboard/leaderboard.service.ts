@@ -17,12 +17,11 @@ export class LeaderboardService{
         @Inject(AccountService) private readonly accountService: AccountService
     ){}
 
-    async getLeaderboard(questionId: string, top: number){
+    async getLeaderboard(questionId: string){
         try {
             const result = await this.leaderboardRepository.find({
                 relations: {
                     account: true,
-                    question: true,
                 },
                 select: {
                     id: true,
@@ -38,13 +37,20 @@ export class LeaderboardService{
                         id: questionId,
                     }
                 },
-                take: top,
+                take: 3,
                 skip: 0,
                 order:{
                     result: "DESC",
-                    timer: "DESC"
+                    timer: "ASC"
                 }
             })
+
+            if(result){
+                return result
+            }
+            else{
+                throw new HttpException('Không tim thấy bảng xếp hạng', 404);
+            }
         } catch (error) {
             if(error instanceof HttpException){
                 throw error;
