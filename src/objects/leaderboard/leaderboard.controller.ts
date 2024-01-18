@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { LeaderboardService } from "./leaderboard.service";
 import { LeaderboardDto } from "src/dto/leaderboard.dto";
@@ -10,7 +10,7 @@ export class LeaderboardController{
     constructor(private readonly leaderboardService: LeaderboardService) { }
 
     @Get()
-    async getLeaderboard(@Res() res, @Query('questionId') questionId: string){
+    async getLeaderboard(@Res() res, @Param('questionId') questionId: string){
         const result = await this.leaderboardService.getLeaderboard(questionId);
 
         return res.status(HttpStatus.OK).json(result);
