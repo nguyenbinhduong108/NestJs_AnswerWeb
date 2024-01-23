@@ -15,6 +15,8 @@ import { LoggerMiddleware } from './logger/logger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { Leaderboard } from './entities/leaderboard.entity';
 import { LeaderboardModule } from './objects/leaderboard/leaderboard.module';
+import { Comments } from './entities/comment.entity';
+import { CommentsModule } from './objects/comment/comments.module';
 
 
 @Module({
@@ -28,7 +30,7 @@ import { LeaderboardModule } from './objects/leaderboard/leaderboard.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [Account, Category, Question, Answer, Leaderboard],
+      entities: [Account, Category, Question, Answer, Leaderboard, Comments],
       synchronize: true,
       // logger: 'simple-console',
       // logging: ['query'],
@@ -38,6 +40,7 @@ import { LeaderboardModule } from './objects/leaderboard/leaderboard.module';
     QuestionModule,
     AnswerModule,
     LeaderboardModule,
+    CommentsModule,
     ImgurModule,
   ],
   controllers: [AppController],

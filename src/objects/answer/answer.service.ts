@@ -57,7 +57,7 @@ export class AnswerService {
                     },
                 });
 
-                this.questionService.updateTurnOfQuestion(questionId);
+                await this.questionService.updateTurnOfQuestion(questionId);
 
                 return result;
             } else {
@@ -152,10 +152,10 @@ export class AnswerService {
 
                     await this.answerRepository.save(answerElement);
                 });
-                await this.questionService.updateAddQuantityOfQuestion(questionId, answerDto.length);
-                
-                return  this.getAllAnswerByQuestionId(questionId);
 
+                await this.questionService.updateAddQuantityOfQuestion(questionId, answerDto.length);
+
+                return await this.getAllAnswerByQuestionId(questionId);
             } else {
                 throw new HttpException('Không tồn tại question cần tìm', 404);
             }
@@ -204,7 +204,12 @@ export class AnswerService {
 
                 const result = await this.answerRepository.update(
                     { id: answerId },
-                    answerDto,
+                    {
+                        title: answerDto.title,
+                        answers: answerDto.answers,
+                        trueAnswer: answerDto.trueAnswer,
+                        image: answerDto.image,
+                    }
                 );
 
                 if (result.affected) {

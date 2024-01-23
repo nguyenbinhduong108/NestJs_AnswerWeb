@@ -399,7 +399,6 @@ export class QuestionService {
           id: questionId,
         },
       });
-
       return result;
     } catch (error) {
       if (error instanceof HttpException) {
@@ -496,21 +495,18 @@ export class QuestionService {
       });
 
       if (questionUpdate) {
-        const question = await this.questionRepository.create({
-          account: { id: questionDto.accountId },
-          category: { id: questionDto.categoryId },
-          updatedAt: Date.now(),
-          turn: questionUpdate.turn,
-          quantity: questionUpdate.quantity,
-          ...questionDto,
-        });
-
         const result = await this.questionRepository.update(
           { id: questionId },
-          question,
-        );
+          {
+            turn: questionUpdate.turn,
+            quantity: questionUpdate.quantity,
+            name: questionDto.name,
+            timer: questionDto.timer,
+            image: questionDto.image
+          });
 
         if (result.affected) {
+
           return this.getOneQuestionByQuestionId(questionId);
         } else {
           throw new HttpException('Cập nhật bộ câu hỏi không thành công', 500);

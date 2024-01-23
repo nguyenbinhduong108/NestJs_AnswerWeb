@@ -19,7 +19,7 @@ export class AnswerDto {
     trueAnswer: string;
 
     @IsOptional()
+    @IsString({message: 'Ảnh phải là 1 chuỗi'})
     @ApiProperty({type: String, default: "https://i.imgur.com/oJN9YcQ.jpg"})
     image: string;
-
 }

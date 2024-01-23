@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class AccountDto{
     id: string;
@@ -21,10 +21,12 @@ export class AccountDto{
     username: string;
 
     @IsOptional()
+    @IsString({message: 'Ảnh đại diện phải là một chuỗi'})
     @ApiProperty({type: String, default: 'https://i.imgur.com/t9Y4WFN.jpg'})
     avatar: string;
 
     @IsOptional()
+    @IsBoolean({message: 'Trạng thái không đúng định dạng'})
     @ApiProperty({type: Boolean, default: false})
     isAdmin: boolean;
 }

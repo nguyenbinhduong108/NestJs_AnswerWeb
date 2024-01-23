@@ -1,10 +1,11 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Account } from "./account.entity";
 import { Category } from "./category.entity";
 import { Answer } from "./answer.entity";
 import { BaseIdentity } from "src/shared/interface/baseIdentity.entity";
 import { Expose } from "class-transformer";
 import { Leaderboard } from "./leaderboard.entity";
+import { Comments } from "./comment.entity";
 
 @Entity({ name: "question" })
 export class Question extends BaseIdentity{
@@ -51,4 +52,7 @@ export class Question extends BaseIdentity{
 
     @OneToMany(() => Leaderboard,(leaderboard) => leaderboard.question)
     leaderboards: Leaderboard[];
+
+    @OneToMany(() => Comments, (comments) => comments.question)
+    comments: Comment[];
 }
