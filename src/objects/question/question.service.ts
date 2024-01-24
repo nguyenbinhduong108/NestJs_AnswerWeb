@@ -29,7 +29,7 @@ export class QuestionService {
    *  - Nếu tìm thấy thì sang B2
    * B2: Trả về danh sách question
    */
-  async getAll(limit: number, offset: number, search: string): Promise<{}> {
+  async getAll(limit: number, page: number, search: string): Promise<{}> {
     try {
       let all: number = 0;
       let result: Array<Question> = [];
@@ -72,7 +72,7 @@ export class QuestionService {
             name: Like(`%${search}%`),
           },
           take: limit,
-          skip: offset,
+          skip: (page-1)*limit,
         });
       } else {
         all = await this.questionRepository.count({});
@@ -103,7 +103,7 @@ export class QuestionService {
             },
           },
           take: limit,
-          skip: offset,
+          skip: (page-1)*limit,
         });
       }
 
@@ -133,7 +133,7 @@ export class QuestionService {
   async getAllQuestionByAccountId(
     accountId: string,
     limit: number,
-    offset: number,
+    page: number,
     search: string,
   ): Promise<{}> {
     try {
@@ -182,7 +182,7 @@ export class QuestionService {
             name: Like(`%${search}%`),
           },
           take: limit,
-          skip: offset,
+          skip: (page-1)*limit,
         });
       } else {
         all = await this.questionRepository.countBy({
@@ -222,7 +222,7 @@ export class QuestionService {
             },
           },
           take: limit,
-          skip: offset,
+          skip: (page-1)*limit,
         });
       }
 
@@ -252,7 +252,7 @@ export class QuestionService {
   async getAllQuestionByCategoryId(
     categoryId: string,
     limit: number,
-    offset: number,
+    page: number,
     search: string,
   ): Promise<{}> {
     try {
@@ -301,7 +301,7 @@ export class QuestionService {
             name: Like(`%${search}%`),
           },
           take: limit,
-          skip: offset,
+          skip: (page-1)*limit,
         });
       } else {
         all = await this.questionRepository.countBy({
@@ -341,7 +341,7 @@ export class QuestionService {
             },
           },
           take: limit,
-          skip: offset,
+          skip: (page-1)*limit,
         });
       }
 

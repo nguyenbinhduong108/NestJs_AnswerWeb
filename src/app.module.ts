@@ -1,7 +1,5 @@
 import { QuestionModule } from './objects/question/question.module';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { AccountModule } from './objects/account/account.module';
@@ -43,8 +41,6 @@ import { CommentsModule } from './objects/comment/comments.module';
     CommentsModule,
     ImgurModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule{}
 // export class AppModule implements NestModule {

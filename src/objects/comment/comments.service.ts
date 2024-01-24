@@ -43,7 +43,7 @@ export class CommentsService {
                         }
                     },
                     take: 10,
-                    skip: page * 10,
+                    skip: (page-1) * 10,
                 });
 
                 return result;

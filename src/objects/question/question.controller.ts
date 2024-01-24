@@ -18,9 +18,9 @@ export class QuestionController {
         type: String,
         required: false
     })
-    async getAllQuestion(@Res() res, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search?: string) {
+    async getAllQuestion(@Res() res, @Query('limit') limit: number, @Query('page') page: number, @Query('search') search?: string) {
         
-        const result = await this.questionService.getAll(limit, offset, search);
+        const result = await this.questionService.getAll(limit, page, search);
 
         return res.status(HttpStatus.OK).json(result);
     }
@@ -31,8 +31,8 @@ export class QuestionController {
         type: String,
         required: false
     })
-    async getAllQuestionByAccountId(@Param("accountId") accountId: string, @Res() res, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search?: string) {
-        const result = await this.questionService.getAllQuestionByAccountId(accountId, limit, offset, search);
+    async getAllQuestionByAccountId(@Param("accountId") accountId: string, @Res() res, @Query('limit') limit: number, @Query('page') page: number, @Query('search') search?: string) {
+        const result = await this.questionService.getAllQuestionByAccountId(accountId, limit, page, search);
 
         return res.status(HttpStatus.OK).json(result);
     }
@@ -43,8 +43,8 @@ export class QuestionController {
         type: String,
         required: false
     })
-    async getAllQuestionByCategoryId(@Param("categoryId") categoryId: string, @Res() res, @Query('limit') limit: number, @Query('offset') offset: number, @Query('search') search?: string) {
-        const result = await this.questionService.getAllQuestionByCategoryId(categoryId, limit, offset, search);
+    async getAllQuestionByCategoryId(@Param("categoryId") categoryId: string, @Res() res, @Query('limit') limit: number, @Query('page') page: number, @Query('search') search?: string) {
+        const result = await this.questionService.getAllQuestionByCategoryId(categoryId, limit, page, search);
 
         return res.status(HttpStatus.OK).json(result);
     }
