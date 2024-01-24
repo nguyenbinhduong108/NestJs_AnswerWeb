@@ -33,7 +33,7 @@ export class CommentsController {
         return res.status(HttpStatus.OK).json(result);
     }
 
-    @Delete('id')
+    @Delete(':id')
     async deleteComments(@Res() res, @Param('id') id: string) {
 
         const result = await this.commentsService.deleteComments(id);
