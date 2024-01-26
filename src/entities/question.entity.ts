@@ -33,6 +33,9 @@ export class Question extends BaseIdentity{
     @Expose()
     turn: number;
 
+    @Column('int', {default: 1})
+    level: number;
+
     @ManyToOne(() => Account, (account) => account.questions, {onDelete: "CASCADE"})
     @JoinColumn({
         name: "accountId",

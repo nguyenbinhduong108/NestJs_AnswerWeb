@@ -22,7 +22,13 @@ export class QuestionDto{
     @ApiProperty({type: String, default: "c528aa85-6f65-4794-91c9-fe6102b94c12"})
     categoryId: string;
 
+    @IsNotEmpty({message: "Chủ đề không được để trống"})
     @IsNumber({},{message: "Giới hạn thời gian phải là số"})
     @ApiProperty({type: Number})
     timer: number;
+
+    @IsNotEmpty({message: "Mức độ không được để trống"})
+    @IsNumber({},{message: "Mức độ phải là số"})
+    @ApiProperty({type: Number})
+    level: number;   
 }

@@ -29,7 +29,7 @@ export class QuestionService {
    *  - Nếu tìm thấy thì sang B2
    * B2: Trả về danh sách question
    */
-  async getAll(limit: number, page: number, search: string): Promise<{}> {
+  async getAll(limit: number, page: number, search: string) {
     try {
       let all: number = 0;
       let result: Array<Question> = [];
@@ -54,6 +54,7 @@ export class QuestionService {
             image: true,
             timer: true,
             turn: true,
+            level: true,
             quantity: true,
             createdAt: true,
             updatedAt: true,
@@ -65,7 +66,6 @@ export class QuestionService {
             category: {
               id: true,
               name: true,
-              image: true,
             },
           },
           where: {
@@ -88,6 +88,7 @@ export class QuestionService {
             image: true,
             timer: true,
             turn: true,
+            level: true,
             quantity: true,
             createdAt: true,
             updatedAt: true,
@@ -99,7 +100,6 @@ export class QuestionService {
             category: {
               id: true,
               name: true,
-              image: true,
             },
           },
           take: limit,
@@ -107,15 +107,22 @@ export class QuestionService {
         });
       }
 
+      let data = [];
+      
+      result.forEach(element => {
+        let newElement = this.addTagsInQuestion(element);
+        data.push(newElement);
+      })
+
       return {
         total: Math.ceil(all / limit),
-        data: result,
+        data: data,
       };
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
       } else {
-        throw new HttpException('Lỗi server', 500);
+        throw new HttpException('1111111111111111Lỗi server', 500);
       }
     }
   }
@@ -135,7 +142,7 @@ export class QuestionService {
     limit: number,
     page: number,
     search: string,
-  ): Promise<{}> {
+  ) {
     try {
       let all: number = 0;
       let result: Array<Question> = [];
@@ -161,6 +168,7 @@ export class QuestionService {
             image: true,
             timer: true,
             turn: true,
+            level: true,
             quantity: true,
             createdAt: true,
             updatedAt: true,
@@ -172,7 +180,6 @@ export class QuestionService {
             category: {
               id: true,
               name: true,
-              image: true,
             },
           },
           where: {
@@ -202,6 +209,7 @@ export class QuestionService {
             image: true,
             timer: true,
             turn: true,
+            level: true,
             quantity: true,
             createdAt: true,
             updatedAt: true,
@@ -213,7 +221,6 @@ export class QuestionService {
             category: {
               id: true,
               name: true,
-              image: true,
             },
           },
           where: {
@@ -226,9 +233,16 @@ export class QuestionService {
         });
       }
 
+      let data = [];
+      
+      result.forEach(element => {
+        let newElement = this.addTagsInQuestion(element);
+        data.push(newElement);
+      })
+
       return {
         total: Math.ceil(all / limit),
-        data: result,
+        data: data,
       };
     } catch (error) {
       if (error instanceof HttpException) {
@@ -254,10 +268,10 @@ export class QuestionService {
     limit: number,
     page: number,
     search: string,
-  ): Promise<{}> {
+  ) {
     try {
       let all: number = 0;
-      let result: Array<Question> = [];
+      let result = [];
 
       if (search !== undefined) {
         search = search.trim();
@@ -280,6 +294,7 @@ export class QuestionService {
             image: true,
             timer: true,
             turn: true,
+            level: true,
             quantity: true,
             createdAt: true,
             updatedAt: true,
@@ -291,7 +306,6 @@ export class QuestionService {
             category: {
               id: true,
               name: true,
-              image: true,
             },
           },
           where: {
@@ -301,7 +315,7 @@ export class QuestionService {
             name: Like(`%${search}%`),
           },
           take: limit,
-          skip: (page-1)*limit,
+          skip: (page-1) * limit,
         });
       } else {
         all = await this.questionRepository.countBy({
@@ -321,6 +335,7 @@ export class QuestionService {
             image: true,
             timer: true,
             turn: true,
+            level: true,
             quantity: true,
             createdAt: true,
             updatedAt: true,
@@ -332,28 +347,34 @@ export class QuestionService {
             category: {
               id: true,
               name: true,
-              image: true,
-            },
+            }
           },
           where: {
             category: {
               id: categoryId,
-            },
+            }
           },
           take: limit,
           skip: (page-1)*limit,
         });
       }
 
+      let data = [];
+      
+      result.forEach(element => {
+        let newElement = this.addTagsInQuestion(element);
+        data.push(newElement);
+      })
+
       return {
         total: Math.ceil(all / limit),
-        data: result,
+        data: data,
       };
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
       } else {
-        throw new HttpException('Lỗi server', 500);
+        throw new HttpException('11111111111111111Lỗi server', 500);
       }
     }
   }
@@ -368,7 +389,7 @@ export class QuestionService {
    *  - Nếu tìm thấy sang B2
    * B2: Trả về question
    */
-  async getOneQuestionByQuestionId(questionId: string): Promise<Question> {
+  async getOneQuestionByQuestionId(questionId: string) {
     try {
       const result = await this.questionRepository.findOne({
         relations: {
@@ -381,6 +402,7 @@ export class QuestionService {
           image: true,
           timer: true,
           turn: true,
+          level: true,
           quantity: true,
           createdAt: true,
           updatedAt: true,
@@ -399,7 +421,10 @@ export class QuestionService {
           id: questionId,
         },
       });
-      return result;
+
+      const data = this.addTagsInQuestion(result);
+
+      return data;
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -424,7 +449,7 @@ export class QuestionService {
    *  - Nếu thêm thành công sang B4
    * B4: Trả về question
    */
-  async createQuestion(questionDto: QuestionDto): Promise<Question> {
+  async createQuestion(questionDto: QuestionDto) {
     try {
       if (
         questionDto.image === null ||
@@ -457,7 +482,7 @@ export class QuestionService {
       const result = await this.questionRepository.save(question);
 
       if (result) {
-        return this.getOneQuestionByQuestionId(result.id);
+        return result;
       } else {
         throw new HttpException('Thêm bộ câu hỏi không thành công', 500);
       }
@@ -488,7 +513,7 @@ export class QuestionService {
   async updateQuestion(
     questionId: string,
     questionDto: QuestionDto,
-  ): Promise<Question> {
+  ) {
     try {
       const questionUpdate = await this.questionRepository.findOneBy({
         id: questionId,
@@ -498,16 +523,15 @@ export class QuestionService {
         const result = await this.questionRepository.update(
           { id: questionId },
           {
-            turn: questionUpdate.turn,
-            quantity: questionUpdate.quantity,
             name: questionDto.name,
             timer: questionDto.timer,
-            image: questionDto.image
+            image: questionDto.image,
+            level: questionDto.level,
           });
 
         if (result.affected) {
 
-          return this.getOneQuestionByQuestionId(questionId);
+          return result;
         } else {
           throw new HttpException('Cập nhật bộ câu hỏi không thành công', 500);
         }
@@ -536,7 +560,7 @@ export class QuestionService {
    *  - Nếu xoá thành công sang B3
    * B3: Trả về true
    */
-  async deleteQuestion(questionId: string): Promise<Boolean> {
+  async deleteQuestion(questionId: string) {
     try {
       const question = await this.questionRepository.findOneBy({
         id: questionId,
@@ -566,7 +590,7 @@ export class QuestionService {
    * cập nhật lại tổng số lượt chơi
    * @param id
    */
-  async updateTurnOfQuestion(id: string): Promise<void> {
+  async updateTurnOfQuestion(id: string) {
     try {
       const result = await this.questionRepository.findOneBy({ id: id });
 
@@ -582,7 +606,7 @@ export class QuestionService {
    * cập nhật lại tổng số câu hỏi khi thêm câu hỏi
    * @param id
    */
-  async updateAddQuantityOfQuestion(id: string, slot: number): Promise<void> {
+  async updateAddQuantityOfQuestion(id: string, slot: number) {
     try {
       const result = await this.questionRepository.findOneBy({ id: id });
 
@@ -601,7 +625,7 @@ export class QuestionService {
    * cập nhật lại tổng số câu hỏi khi xoá câu hỏi
    * @param id
    */
-  async updateMinusQuantityOfQuestion(id: string): Promise<void> {
+  async updateMinusQuantityOfQuestion(id: string) {
     try {
       const result = await this.questionRepository.findOneBy({ id: id });
       result.quantity--;
@@ -612,5 +636,19 @@ export class QuestionService {
     } catch (error) {
       throw new HttpException('Lỗi cập nhật tổng số câu hỏi', 500);
     }
+  }
+
+  addTagsInQuestion(question: Question) {
+    let isHot = false;
+      
+
+    if(question.turn >= 500) isHot = true;
+
+    const newQuestion = {
+      ...question,
+      isHot,
+    }
+
+    return newQuestion;
   }
 }
