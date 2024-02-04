@@ -9,7 +9,7 @@ export class LeaderboardController{
 
     constructor(private readonly leaderboardService: LeaderboardService) { }
 
-    @Get()
+    @Get(':questionId')
     async getLeaderboard(@Res() res, @Param('questionId') questionId: string){
         const result = await this.leaderboardService.getLeaderboard(questionId);
 
