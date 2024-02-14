@@ -17,10 +17,10 @@ export class CommentsService {
         @Inject(AccountService) private readonly accountService: AccountService,
     ) { }
 
-    async getComments(questionId: string, page: number) {
+    async getComments(questionId: string, page: number): Promise<{}> {
         try {
             const question = await this.questionService.getOneQuestionByQuestionId(questionId);
-
+            const all = await this.commentsRepository.countBy({id: questionId});
 
             if (question) {
                 const result = await this.commentsRepository.find({
@@ -46,7 +46,10 @@ export class CommentsService {
                     skip: (page-1) * 10,
                 });
 
-                return result;
+                return {
+                    total: Math.ceil(all/10),
+                    data: result,
+                };
             } else {
                 throw new HttpException('Không tìm thấy bộ câu hỏi', 404);
             }

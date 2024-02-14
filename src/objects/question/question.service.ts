@@ -122,7 +122,7 @@ export class QuestionService {
       if (error instanceof HttpException) {
         throw error;
       } else {
-        throw new HttpException('1111111111111111Lỗi server', 500);
+        throw new HttpException('Lỗi server', 500);
       }
     }
   }
