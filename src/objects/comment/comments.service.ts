@@ -20,13 +20,18 @@ export class CommentsService {
     async getComments(questionId: string, page: number): Promise<{}> {
         try {
             const question = await this.questionService.getOneQuestionByQuestionId(questionId);
-            const all = await this.commentsRepository.countBy({id: questionId});
+            const all: number = await this.commentsRepository.count({
+                where: {
+                    question :{
+                        id: questionId
+                    }
+                },
+            });
 
             if (question) {
                 const result = await this.commentsRepository.find({
                     relations: {
                         account: true,
-                        question: true,
                     },
                     select: {
                         id: true,
@@ -35,7 +40,7 @@ export class CommentsService {
                         account: {
                             username: true,
                             avatar: true,
-                        }
+                        },
                     },
                     where: {
                         question: {
