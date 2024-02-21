@@ -17,7 +17,7 @@ export class ImgurService {
             const response = await axios.post('https://api.imgur.com/3/image', imageData, {
                 headers,
             });
-
+            
             return response.data.data.link;
         } catch (error) {
             throw new Error('Không thể tạo avatar');
