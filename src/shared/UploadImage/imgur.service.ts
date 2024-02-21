@@ -1,26 +1,28 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import axios from "axios";
 
 @Injectable()
 export class ImgurService {
 
 
-    async uploadImageToImgur(imageData: Buffer): Promise<string> {
+    async uploadImageToImgur(imageData: Buffer) {
 
-        const clientId = '93319ee59de2f4e'; 
+        const clientId = '2d6e152d9848d29'; 
         const headers = {
             'Authorization': `Client-ID ${clientId}`,
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart / form-data',
         };
 
         try {
-            const response = await axios.post('https://api.imgur.com/3/image', imageData, {
-                headers,
+            console.log(2);
+            const response = await axios.post('https://api.imgur.com/3/upload', imageData, {
+                headers
             });
-            
+            console.log(response);
             return response.data.data.link;
         } catch (error) {
-            throw new Error('Không thể tạo avatar');
+            console.log(6);
+            throw new HttpException('Không thể tạo avatar', 500);
         }
     }
 }
