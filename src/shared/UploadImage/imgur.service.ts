@@ -15,7 +15,7 @@ export class ImgurService {
 
         try {
             console.log(2);
-            const response = await axios.post('https://api.imgur.com/3/upload', imageData, {
+            const response = await axios.post('https://api.imgur.com/3/image', imageData, {
                 headers
             });
             console.log(response);
